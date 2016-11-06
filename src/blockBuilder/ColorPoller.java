@@ -3,12 +3,12 @@ package blockBuilder;
 import lejos.hardware.lcd.LCD;
 import lejos.robotics.SampleProvider;
 
-public class FrontColorPoller extends Thread {
+public class ColorPoller extends Thread {
 	private SampleProvider colorProvider;
 	private float[] colorData;
 	private ColorController cont;
 	private int reading;
-	public FrontColorPoller(SampleProvider colorProvider, float[] colorData, ColorController cont){
+	public ColorPoller(SampleProvider colorProvider, float[] colorData, ColorController cont){
 		this.colorProvider = colorProvider;
 		this.colorData = colorData;
 		this.cont = cont;

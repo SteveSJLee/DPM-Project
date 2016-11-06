@@ -13,7 +13,7 @@ public class Odometer extends Thread {
 	// robot position
 	private double x, y, theta;
 	private int leftMotorTachoCount, rightMotorTachoCount, leftTachoCountLast, rightTachoCountLast;
-	private EV3LargeRegulatedMotor leftMotor, rightMotor;
+	//private EV3LargeRegulatedMotor leftMotor, rightMotor;
 	private double distanceTravelled=0;
 	// odometer update period, in ms
 	private static final long ODOMETER_PERIOD = 20;
@@ -22,9 +22,7 @@ public class Odometer extends Thread {
 	private Object lock;
 
 	// default constructor
-	public Odometer(EV3LargeRegulatedMotor leftMotor,EV3LargeRegulatedMotor rightMotor) {
-		this.leftMotor = leftMotor;
-		this.rightMotor = rightMotor;
+	public Odometer() {
 		this.x = 0.0;
 		this.y = 0.0;
 		this.theta = 0.0;
@@ -47,8 +45,8 @@ public class Odometer extends Thread {
 		long updateStart, updateEnd;
 		
 		
-		leftMotor.resetTachoCount();
-		rightMotor.resetTachoCount();
+		Main.leftMotor.resetTachoCount();
+		Main.rightMotor.resetTachoCount();
 		
 		
 		while (true) {
@@ -56,8 +54,8 @@ public class Odometer extends Thread {
 		
 			
 			//get tacho count from motors
-			leftMotorTachoCount = leftMotor.getTachoCount();
-			rightMotorTachoCount = rightMotor.getTachoCount();
+			leftMotorTachoCount = Main.leftMotor.getTachoCount();
+			rightMotorTachoCount = Main.rightMotor.getTachoCount();
 			
 			
 			//calculate dist of each wheel based on tacho count

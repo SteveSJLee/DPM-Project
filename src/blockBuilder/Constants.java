@@ -24,6 +24,7 @@ public final class Constants {
 	public static final double LOCALIZATION_WALL_DIST = 30;
 	
 	public static final int OBJECT_DETECT_DISTANCE = 40;
+	public static final int LINE_DETECT_THRESHOLD = 2;
 	
 	public static final double BLOCK_HEIGHT = 2.5; //cm
 
