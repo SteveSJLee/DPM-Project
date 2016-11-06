@@ -2,8 +2,8 @@ package blockBuilder;
 
 public final class Constants {
 	//measurements
-	public static final double WHEEL_RADIUS = 0;
-	public static final double WHEEL_TRACK = 0;
+	public static final double WHEEL_RADIUS = 2.1;
+	public static final double WHEEL_TRACK = 11;
 	public static final double TILE_WIDTH = 30.48;
 	
 	public static final int SLOW_SPEED = 100;
