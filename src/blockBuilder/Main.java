@@ -55,9 +55,15 @@ public class Main {
 				float[] frontColorData = new float[frontColorValue.sampleSize()];	
 				float[] leftColorData = new float[leftColorvalue.sampleSize()];			
 				float[] rightColorData = new float[rightColorvalue.sampleSize()];			
-
+				
+				leftMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
+				rightMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
+				
 				Odometer odo = new Odometer();
 				odo.start();
+				Navigator nav = new Navigator(odo);
+				nav.start();
+				
 				
 				//use threads for both sensors to have them poll continuosly
 		
