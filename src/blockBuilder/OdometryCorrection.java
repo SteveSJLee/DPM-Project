@@ -39,9 +39,11 @@ public class OdometryCorrection extends Thread {
 				double newX = Math.round(odometer.getX()/30.0)*30 + relativeCenterX;
 				double newY = Math.round(odometer.getX()/30.0)*30 + relativeCenterY;
 				
-				odometer.setX(newX);
-				odometer.setY(newY);
-				odometer.setTheta(newTheta);
+//				odometer.setX(newX);
+//				odometer.setY(newY);
+//				odometer.setTheta(newTheta);
+				odometer.setPosition(new double[]{newX,  newY, newTheta}, new boolean[]{true,true,true});
+				
 			}
 			leftLineDetected = false;
 			rightLineDetected = false;

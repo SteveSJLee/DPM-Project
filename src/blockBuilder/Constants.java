@@ -14,6 +14,9 @@ public final class Constants {
 	public static final int CLAW_SPEED = 200;
 	public static final int LIFT_SPEED = 100;
 	
+	//odometer
+	public static final int ODOMETER_INTERVAL = 30;
+	
 	//odometer errors
 	public static final double ODO_DISTANCE_ERROR = 0.5;
 	public static final double ODO_ANGLE_ERROR = 2.0;

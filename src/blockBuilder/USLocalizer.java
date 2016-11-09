@@ -3,6 +3,7 @@ package blockBuilder;
 import lejos.robotics.SampleProvider;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
+import lejos.hardware.lcd.LCD;
 
 //*********************
 //class used to localize the robot and move it to position (0, 0) on the surface
@@ -69,16 +70,22 @@ public class USLocalizer {
 		// ClockWise Rotation
 		Main.leftMotor.forward();
 		Main.rightMotor.backward();
-
-		boolean isFacingWall = true;
+		boolean isFacingWall;
+		if(distance < 50)
+			isFacingWall = true;
+		else
+			isFacingWall = false;
 		do{
+			LCD.clear(3);
+			LCD.drawString("FACING WALL", 0, 3);
 			distance = getFilteredData();
 			if(distance > 50)
 				isFacingWall = false;
 		} while(isFacingWall);
 		
 		while(!firstLocalizationDone) {
-
+			LCD.clear(3);
+			LCD.drawString("FIRST LOCALIZATION", 0, 3);
 			synchronized (this) {
 				// Calculate the current distance
 				distance = getFilteredData();
@@ -112,12 +119,14 @@ public class USLocalizer {
 
 		// CounterClockWise Rotation
 		Main.leftMotor.backward();
-		Main.leftMotor.forward();
+		Main.rightMotor.forward();
 
 		// Reuse and reset the same boolean
 		firstPointDetected = false;
 
 		while(!secondLocalizationDone) {
+			LCD.clear(3);
+			LCD.drawString("SECOND LOCALIZATION", 0, 3);
 			synchronized (this) {
 
 				// Calculate the current distance
@@ -173,6 +182,9 @@ public class USLocalizer {
 		pos[2] = odo.getTheta();//setting the angle to its current value
 
 		odo.setPosition(pos, new boolean [] {true, true, true});
+		
+		LCD.clear(3);
+		LCD.drawString("TRAVELLING", 0, 3);
 		
 		nav.travelTo(0.0,0.0);
 		nav.turnTo(0.0,  false);
