@@ -174,11 +174,11 @@ public class USLocalizer {
 		//calculating values of x, y coordinates
 
 		nav.turnTo(RIGHT_ANGLE*2, true);//allows us to find x
-		pos[0] = -TILE_SIZE+getFilteredData()+SENSOR_CENTER_DIST;
+		pos[1] = -TILE_SIZE+getFilteredData()+SENSOR_CENTER_DIST;
 		
 		
 		nav.turnTo(RIGHT_ANGLE*3, true);//allows us to find y
-		pos[1] = -TILE_SIZE+getFilteredData()+SENSOR_CENTER_DIST - Y_OFFSET;
+		pos[0] = -TILE_SIZE+getFilteredData()+SENSOR_CENTER_DIST - Y_OFFSET;
 		pos[2] = odo.getTheta();//setting the angle to its current value
 
 		odo.setPosition(pos, new boolean [] {true, true, true});
@@ -187,6 +187,9 @@ public class USLocalizer {
 		LCD.drawString("TRAVELLING", 0, 3);
 		
 		nav.travelTo(0.0,0.0);
+
+		LCD.clear(3);
+		LCD.drawString("TURNING", 0, 3);
 		nav.turnTo(0.0,  false);
 
 		//The robot is now in position to perform object search

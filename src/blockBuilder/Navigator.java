@@ -49,7 +49,7 @@ public class Navigator extends Thread {
 	public void travelTo(double x, double y) {
 		double minAng;
 		while (Math.abs(x - odometer.getX()) > Constants.ODO_DISTANCE_ERROR || Math.abs(y - odometer.getY()) > Constants.ODO_DISTANCE_ERROR) {
-			minAng = (Math.atan2(y - odometer.getY(), x - odometer.getX())) * (180.0 / Math.PI);
+			minAng = (Math.atan2(x - odometer.getX(), y - odometer.getY())) * (180.0 / Math.PI);
 			if (minAng < 0)
 				minAng += 360.0;
 			this.turnTo(minAng, false);

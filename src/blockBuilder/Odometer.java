@@ -262,6 +262,7 @@ package blockBuilder;
 
 import lejos.utility.Timer;
 import lejos.utility.TimerListener;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class Odometer implements TimerListener {
@@ -332,12 +333,15 @@ public class Odometer implements TimerListener {
 			theta += dDH[1];
 			theta = fixDegAngle(theta);
 
-			x += dDH[0] * Math.cos(Math.toRadians(theta));
-			y += dDH[0] * Math.sin(Math.toRadians(theta));
+			x += dDH[0] * Math.sin(Math.toRadians(theta));
+			y += dDH[0] * Math.cos(Math.toRadians(theta));
 		}
 
 		oldDH[0] += dDH[0];
 		oldDH[1] += dDH[1];
+		LCD.drawString("X:" + Double.toString(this.getX()), 0, 0);
+		LCD.drawString("Y:" + Double.toString(this.getY()), 0, 1);
+		LCD.drawString("T:" + Double.toString(this.getTheta()), 0, 2);
 	}
 
 	// return X value
