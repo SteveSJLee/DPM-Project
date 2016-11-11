@@ -48,5 +48,10 @@ public class UltrasonicPoller extends Thread{
 			try { Thread.sleep(10); } catch(Exception e){}		// Poor man's timed sampling
 		}
 	}
+	
+	public int getDistance() {
+		// TODO Auto-generated method stub
+		return distance;
+	}
 
 }
