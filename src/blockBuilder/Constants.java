@@ -10,7 +10,7 @@ public final class Constants {
 	public static final int SLOW_SPEED = 100;
 	public static final int FAST_SPEED = 200;
 	public static final int SUPER_FAST_SPEED = 300;
-	public static final int WHEEL_ACCELERATION = 4000;
+	public static final int WHEEL_ACCELERATION = 4000; //200 in lab 5
 	public static final int CLAW_SPEED = 200;
 	public static final int LIFT_SPEED = 100;
 	
@@ -18,8 +18,8 @@ public final class Constants {
 	public static final int ODOMETER_INTERVAL = 30;
 	
 	//odometer errors
-	public static final double ODO_DISTANCE_ERROR = 0.5;
-	public static final double ODO_ANGLE_ERROR = 2.0;
+	public static final double ODO_DISTANCE_ERROR = 0.5; //3 in lab 5
+	public static final double ODO_ANGLE_ERROR = 2.0; //3 in lab 5
 	
 	//obstacle avoidance
 	public static final double AVOID_BAND_CENTER = 0;

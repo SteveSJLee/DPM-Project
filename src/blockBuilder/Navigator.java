@@ -1,73 +1,209 @@
+
+//State machine taken from Tutorial notes.  Very similar.
+//Edited to work for our robot. 
+//5 cases: INIT, TURNING, TRAVELING, SEARCHING, EMERGENCY
+
 package blockBuilder;
 
-public class Navigator extends Thread {
-	private Odometer odometer;
-	public Navigator(Odometer odometer){
-		this.odometer = odometer;
-	}
-	
-	public void run(){
+import lejos.hardware.sensor.SensorModes;
 
+/*
+ * 
+ * The Navigator class extends the functionality of the Navigation class.
+ * It offers an alternative travelTo() method which uses a state machine
+ * to implement obstacle avoidance.
+ * 
+ * The Navigator class does not override any of the methods in Navigation.
+ * All methods with the same name are overloaded i.e. the Navigator version
+ * takes different parameters than the Navigation version.
+ * 
+ * This is useful if, for instance, you want to force travel without obstacle
+ * detection over small distances. One place where you might want to do this
+ * is in the ObstacleAvoidance class. Another place is methods that implement 
+ * specific features for future milestones such as retrieving an object.
+ * 
+ * 
+ */
+
+
+public class Navigator extends BasicNavigator {
+
+	enum State {
+		INIT, TURNING, TRAVELLING, EMERGENCY, SEARCHING
+	};
+
+	State state;
+
+	private boolean isNavigating = false;
+	private SensorModes colorSensor;
+	private float[] colorData;
+
+	private double destx, desty;
+
+	final static int SLEEP_TIME = 50;
+
+	UltrasonicPoller usSensor;
+
+	public Navigator(Odometer odo, UltrasonicPoller usSensor, SensorModes colorSensor, float [] colorData) {
+		super(odo);
+		this.usSensor = usSensor;
+		this.colorSensor = colorSensor;
+		this.colorData = colorData;
 	}
+
+	/*
+	 * TravelTo function which takes as arguments the x and y position in cm
+	 * Will travel to designated position, while constantly updating it's
+	 * heading
+	 * 
+	 * When avoid=true, the nav thread will handle traveling. If you want to
+	 * travel without avoidance, this is also possible. In this case,
+	 * the method in the Navigation class is used.
+	 * 
+	 */
+	public void travelTo(double x, double y, boolean avoid) {
+		if (avoid) {
+			destx = x;
+			desty = y;
+			isNavigating = true;
+		} else {
+			super.travelTo(x, y);
+		}
+	}
+
 	
 	/*
-	 * TurnTo function which takes an angle and boolean as arguments The boolean controls whether or not to stop the
-	 * motors when the turn is completed
-	 */
-	public void turnTo(double angle, boolean stop) {
+	 * Updates the h
+//	 */
+	private void updateTravel() {
+		double minAng;
 
-		double error = angle - this.odometer.getTheta();
+		minAng = getDestAngle(destx, desty);
+		/*
+		 * Use the BasicNavigator turnTo here because 
+		 * minAng is going to be very small so just complete
+		 * the turn.
+		 */
+		super.turnTo(minAng,false);
+		this.setSpeeds(Constants.FAST_SPEED, Constants.FAST_SPEED);
+	}
 
-		while (Math.abs(error) > Constants.ODO_ANGLE_ERROR) {
+	public void run() {
+		ObstacleAvoidance avoidance = null;
+		state = State.INIT;
+		while (true) {
+			switch (state) {
+			case INIT:
+//				Sound.buzz();
+				if (isNavigating) {
+					state = State.TURNING;
+				}
+				break;
+			case TURNING:
+				/*
+				 * Note: you could probably use the original turnTo()
+				 * from BasicNavigator here without doing any damage.
+				 * It's cheating the idea of "regular and periodic" a bit
+				 * but if you're sure you never need to interrupt a turn there's
+				 * no harm.
+				 * 
+				 * However, this implementation would be necessary if you would like
+				 * to stop a turn in the middle (e.g. if you were travelling but also
+				 * scanning with a sensor for something...)
+				 * 
+				 */
 
-			error = angle - this.odometer.getTheta();
-
-			if (error < -180.0) {
-				this.setSpeeds(-Constants.SLOW_SPEED, Constants.SLOW_SPEED);
-			} else if (error < 0.0) {
-				this.setSpeeds(Constants.SLOW_SPEED, -Constants.SLOW_SPEED);
-			} else if (error > 180.0) {
-				this.setSpeeds(Constants.SLOW_SPEED, -Constants.SLOW_SPEED);
-			} else {
-				this.setSpeeds(-Constants.SLOW_SPEED, Constants.SLOW_SPEED);
+				double destAngle = getDestAngle(destx, desty);
+				turnTo(destAngle);
+				if(facingDest(destAngle)){
+					stopMotors();
+					state = State.TRAVELLING;
+				}
+				break;
+			case TRAVELLING:
+//				Sound.buzz();
+				if (checkEmergency()) { // order matters!
+					state = State.EMERGENCY;
+					avoidance = new ObstacleAvoidance(this, colorSensor, colorData, destx, desty);
+					avoidance.start();
+				} else if (!checkIfDone(destx, desty)) {
+					updateTravel();
+				} else { // Arrived!
+					stopMotors();
+					isNavigating = false;
+					state = State.INIT;
+					//here is where we tried to implement searching.  However,
+					//the robot would constantly see walls, and think they were obstacles.
+					//Too much noise with the ultrasonic sensor to work correctly.
+//					state = State.SEARCHING;
+				}
+				break;
+				//case to search for blocks once it reaches each destination
+//			case SEARCHING:
+//				setSpeeds(-30, 30);
+//				while (usSensor.getDistance()>70){}
+//				stopMotors();
+//				state = State.TRAVELLING;
+//				
+//				break;
+			case EMERGENCY:
+				if (avoidance.obstructionAtPoint()){
+					stopMotors();
+					isNavigating = false;
+					state = State.INIT;
+				}
+				else if (avoidance.resolved()) {
+					state = State.TURNING;
+				} 
+				break;
+			}
+//			Log.log(Log.Sender.Navigator, "state: " + state);
+			try {
+				Thread.sleep(SLEEP_TIME);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
-
-		if (stop) {
-			this.setSpeeds(0, 0);
-		}
 	}
-	
+
+	private boolean checkEmergency() {
+		return usSensor.getDistance() < 23;
+	}
+
+
+	private void turnTo(double angle) {
+		double error;
+		error = angle - this.odometer.getTheta();
+
+		if (error < -180.0) {
+			this.setSpeeds(Constants.SLOW_SPEED, -Constants.SLOW_SPEED);
+		} else if (error < 0.0) {
+			this.setSpeeds(-Constants.SLOW_SPEED, Constants.SLOW_SPEED);
+		} else if (error > 180.0) {
+			this.setSpeeds(-Constants.SLOW_SPEED, Constants.SLOW_SPEED);
+		} else {
+			this.setSpeeds(Constants.SLOW_SPEED, -Constants.SLOW_SPEED);
+		}
+
+	}
+
 	/*
-	 * Go foward a set distance in cm
+	 * Go foward a set distance in cm with or without avoidance
 	 */
-	public void goForward(double distance) {
-		this.travelTo(Math.cos(Math.toRadians(this.odometer.getTheta())) * distance, Math.cos(Math.toRadians(this.odometer.getTheta())) * distance);
+	public void goForward(double distance, boolean avoid) {
+		double x = odometer.getX()
+				+ Math.sin(Math.toRadians(this.odometer.getTheta())) * distance;
+		double y = odometer.getY()
+				+ Math.cos(Math.toRadians(this.odometer.getTheta())) * distance;
+
+		this.travelTo(x, y, avoid);
 
 	}
-	
-	public void travelTo(double x, double y) {
-		double minAng;
-		while (Math.abs(x - odometer.getX()) > Constants.ODO_DISTANCE_ERROR || Math.abs(y - odometer.getY()) > Constants.ODO_DISTANCE_ERROR) {
-			minAng = (Math.atan2(x - odometer.getX(), y - odometer.getY())) * (180.0 / Math.PI);
-			if (minAng < 0)
-				minAng += 360.0;
-			this.turnTo(minAng, false);
-			this.setSpeeds(Constants.SLOW_SPEED, Constants.SLOW_SPEED);
-		}
-		this.setSpeeds(0, 0);
+
+	public boolean isTravelling() {
+		return isNavigating;
 	}
-	
-	public void setSpeeds(int lSpd, int rSpd) {
-		Main.leftMotor.setSpeed(lSpd);
-		Main.rightMotor.setSpeed(rSpd);
-		if (lSpd < 0)
-			Main.leftMotor.backward();
-		else
-			Main.leftMotor.forward();
-		if (rSpd < 0)
-			Main.rightMotor.backward();
-		else
-			Main.rightMotor.forward();
-	}
+
+
+
 }
