@@ -23,12 +23,12 @@ public class Main {
 //	public static final EV3LargeRegulatedMotor clawMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
 //	public static final EV3LargeRegulatedMotor liftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 //	public static final EV3LargeRegulatedMotor frontUsMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("E"));
-	
+	private static Navigator nav;
 	
 	/* Sensors:
 	 *  - 1 Ultrasonic in the front
 	 *  - 3 Color sensors: 1 on the front, and 2 for the wheels ( 1 for each ) */
-	private static final Port frontUsPort = LocalEV3.get().getPort("S3");	
+//	private static final Port frontUsPort = LocalEV3.get().getPort("S3");	
 //	private static final Port frontColorPort = LocalEV3.get().getPort("S2");
 //	private static final Port leftColorPort = LocalEV3.get().getPort("S3");
 //	private static final Port rightColorPort = LocalEV3.get().getPort("S4");
@@ -39,10 +39,10 @@ public class Main {
 				// 2. Create a sensor instance and attach to port
 				// 3. Create a sample provider instance for the above and initialize operating mode
 				// 4. Create a buffer for the sensor data
-				@SuppressWarnings("resource")							    
-				SensorModes frontUsSensor = new EV3UltrasonicSensor(frontUsPort);
-				SampleProvider frontUsValue = frontUsSensor.getMode("Distance");		
-				float[] frontUsData = new float[frontUsValue.sampleSize()];				
+//				@SuppressWarnings("resource")							    
+//				SensorModes frontUsSensor = new EV3UltrasonicSensor(frontUsPort);
+//				SampleProvider frontUsValue = frontUsSensor.getMode("Distance");		
+//				float[] frontUsData = new float[frontUsValue.sampleSize()];				
 
 				//Color sensor setup works just like US, but there are 3 of them
 				// colorValue provides samples from this instance
@@ -62,15 +62,35 @@ public class Main {
 				
 				Odometer odo = new Odometer(Constants.ODOMETER_INTERVAL, true);
 				odo.start();
-				Navigator nav = new Navigator(odo);
+				nav = new Navigator(odo);
 				nav.start();
-				
+				nav.turnBy(360);
+//				nav.goForward(30);
+				completeCourse();
 				//	public USLocalizer(Navigator nav, Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
 
-				USLocalizer localizer = new USLocalizer(nav, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
-				localizer.doLocalization();
+//				USLocalizer localizer = new USLocalizer(nav, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
+//				localizer.doLocalization();
 				
 				//use threads for both sensors to have them poll continuosly
 		
+	}
+	private static void completeCourse() {
+		//set points to go to
+		int[][] waypoints = { { 30, 0 }, { 30, 30 }, { 60, 30 }, { 60, 60 }, {30, 60}, 
+				{0, 60}, {0, 30}, {30, 30}, {60, 30}, {60, 0}, {30, 0}, {30, 30}, 
+				{0, 30}, {0, 60}, {30, 60}};
+		
+
+		for (int[] point : waypoints) {
+			nav.travelTo(point[0], point[1], true);
+			while (nav.isTravelling()) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }

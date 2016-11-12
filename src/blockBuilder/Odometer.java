@@ -280,13 +280,13 @@ public class Odometer implements TimerListener {
 		
 		
 		// default values, modify for your robot
-		this.rightRadius = 2.167;
-		this.leftRadius = 2.167;
-		this.width = 16.8;
+		this.rightRadius = Constants.WHEEL_RADIUS;
+		this.leftRadius = Constants.WHEEL_RADIUS;
+		this.width = Constants.WHEEL_TRACK;
 		
 		this.x = 0.0;
 		this.y = 0.0;
-		this.theta = 90.0;
+		this.theta = 0.0;
 		this.oldDH = new double[2];
 		this.dDH = new double[2];
 
@@ -317,7 +317,7 @@ public class Odometer implements TimerListener {
 		rightTacho = Main.rightMotor.getTachoCount();
 
 		data[0] = (leftTacho * leftRadius + rightTacho * rightRadius) * Math.PI / 360.0;
-		data[1] = (rightTacho * rightRadius - leftTacho * leftRadius) / width;
+		data[1] = -(rightTacho * rightRadius - leftTacho * leftRadius) / width;
 	}
 	
 	/*
