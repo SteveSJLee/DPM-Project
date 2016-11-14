@@ -28,9 +28,9 @@ public class Main {
 	/* Sensors:
 	 *  - 1 Ultrasonic in the front
 	 *  - 3 Color sensors: 1 on the front, and 2 for the wheels ( 1 for each ) */
-//	private static final Port frontUsPort = LocalEV3.get().getPort("S3");	
-//	private static final Port frontColorPort = LocalEV3.get().getPort("S2");
-//	private static final Port leftColorPort = LocalEV3.get().getPort("S3");
+	private static final Port frontUsPort = LocalEV3.get().getPort("S1");	
+	private static final Port rightUsPort = LocalEV3.get().getPort("S2");
+	private static final Port leftUsPort = LocalEV3.get().getPort("S3");
 //	private static final Port rightColorPort = LocalEV3.get().getPort("S4");
 	
 	public static void main(String[] args){
@@ -40,9 +40,17 @@ public class Main {
 				// 3. Create a sample provider instance for the above and initialize operating mode
 				// 4. Create a buffer for the sensor data
 //				@SuppressWarnings("resource")							    
-//				SensorModes frontUsSensor = new EV3UltrasonicSensor(frontUsPort);
-//				SampleProvider frontUsValue = frontUsSensor.getMode("Distance");		
-//				float[] frontUsData = new float[frontUsValue.sampleSize()];				
+				SensorModes frontUsSensor = new EV3UltrasonicSensor(frontUsPort);
+				SampleProvider frontUsValue = frontUsSensor.getMode("Distance");		
+				float[] frontUsData = new float[frontUsValue.sampleSize()];				
+				
+				SensorModes rightUsSensor = new EV3UltrasonicSensor(rightUsPort);
+				SampleProvider rightUsValue = frontUsSensor.getMode("Distance");		
+				float[] rightUsData = new float[frontUsValue.sampleSize()];				
+				
+				SensorModes leftUsSensor = new EV3UltrasonicSensor(leftUsPort);
+				SampleProvider leftUsValue = frontUsSensor.getMode("Distance");		
+				float[] leftUsData = new float[frontUsValue.sampleSize()];				
 
 				//Color sensor setup works just like US, but there are 3 of them
 				// colorValue provides samples from this instance
@@ -69,8 +77,8 @@ public class Main {
 				completeCourse();
 				//	public USLocalizer(Navigator nav, Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
 
-//				USLocalizer localizer = new USLocalizer(nav, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
-//				localizer.doLocalization();
+				USLocalizer localizer = new USLocalizer(nav, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
+				//localizer.doLocalization();
 				
 				//use threads for both sensors to have them poll continuosly
 		
