@@ -34,6 +34,14 @@ public class USLocalizer {
 
 
 	// Constructor
+	
+	/**
+	 * @param nav an instance of the navigator class
+	 * @param odo an instance of the odometer class
+	 * @param usSensor an ultrasonic sensor
+	 * @param usData a float array to store the ultrasonic sensor data
+	 * @param locType localization type; falling edge or rising edge
+	 */
 	public USLocalizer(Navigator nav, Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
 		this.nav = nav;
 		this.odo = odo;
@@ -43,6 +51,10 @@ public class USLocalizer {
 	}
 
 	// Localize the robot using an ultrasonic Sensor and 2 walls
+	
+	/**
+	 *  performs localization using a single ultrasonic sensor by looking for 2 walls
+	 */
 	public void doLocalization() {
 		// Variables used during the process
 		double [] pos = new double [3];
@@ -196,6 +208,10 @@ public class USLocalizer {
 	}
 
 	// Method returning filtered values
+	
+	/**
+	 * @return the ultrasnoic data passed through a clipping filter
+	 */
 	private float getFilteredData() {
 		usSensor.fetchSample(usData, 0);
 		float distance = (float) (usData[0]*100.0);

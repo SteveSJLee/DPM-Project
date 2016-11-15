@@ -7,9 +7,12 @@ package blockBuilder;
 
 import lejos.hardware.sensor.SensorModes;
 
-/*
- * 
- * The Navigator class extends the functionality of the Navigation class.
+
+
+
+/**
+ * @author returnoftheturk
+ *The Navigator class extends the functionality of the Navigation class.
  * It offers an alternative travelTo() method which uses a state machine
  * to implement obstacle avoidance.
  * 
@@ -21,11 +24,7 @@ import lejos.hardware.sensor.SensorModes;
  * detection over small distances. One place where you might want to do this
  * is in the ObstacleAvoidance class. Another place is methods that implement 
  * specific features for future milestones such as retrieving an object.
- * 
- * 
  */
-
-
 public class Navigator extends BasicNavigator {
 
 	enum State {
@@ -44,6 +43,9 @@ public class Navigator extends BasicNavigator {
 
 	UltrasonicPoller usSensor;
 
+	/**
+	 * @param odo an instance of the odometer class
+	 */
 	public Navigator(Odometer odo/*, UltrasonicPoller usSensor, SensorModes colorSensor, float [] colorData*/) {
 		super(odo);
 		/*this.usSensor = usSensor;
@@ -51,7 +53,11 @@ public class Navigator extends BasicNavigator {
 		this.colorData = colorData;*/
 	}
 
-	/*
+	
+	/**
+	 * @param x x-coordinate of destination
+	 * @param y	y-coordinate of dstination
+	 * @param avoid whether or not to do obstacle avoidance
 	 * TravelTo function which takes as arguments the x and y position in cm
 	 * Will travel to designated position, while constantly updating it's
 	 * heading
@@ -59,7 +65,6 @@ public class Navigator extends BasicNavigator {
 	 * When avoid=true, the nav thread will handle traveling. If you want to
 	 * travel without avoidance, this is also possible. In this case,
 	 * the method in the Navigation class is used.
-	 * 
 	 */
 	public void travelTo(double x, double y, boolean avoid) {
 		if (avoid) {
@@ -72,9 +77,9 @@ public class Navigator extends BasicNavigator {
 	}
 
 	
-	/*
-	 * Updates the h
-//	 */
+	/**
+	 * Updates the heading of the robot
+	 */
 	private void updateTravel() {
 		double minAng;
 
@@ -187,7 +192,10 @@ public class Navigator extends BasicNavigator {
 
 	}
 
-	/*
+
+	/**
+	 * @param distance the absolute distance to move forward by
+	 * @param avoid whether or not to do obstacle avoidance
 	 * Go foward a set distance in cm with or without avoidance
 	 */
 	public void goForward(double distance, boolean avoid) {
@@ -200,6 +208,9 @@ public class Navigator extends BasicNavigator {
 
 	}
 
+	/**
+	 * @return whether or not the robot is in the process of travelling to a point
+	 */
 	public boolean isTravelling() {
 		return isNavigating;
 	}
