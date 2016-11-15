@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public final class Filters {
+	
+	//median filter returns the median of a set of data given as an array or arraylist
+	
 	public static float medianFilter(float[] f){
 		Arrays.sort(f);
 		//if f is odd return the element right in the middle, or else return the average of the 2 middle elements

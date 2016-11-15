@@ -41,9 +41,9 @@ public class UltrasonicPoller extends Thread{
 				distance = 255;
 			this.distance = distance;
 			
-			LCD.clear(3);
-			LCD.drawString("US Dist.: " + Integer.toString(distance), 0, 3);
-			cont.processUSData(distance, true , 0);		
+			//LCD.clear(5);
+			//LCD.drawString("US Dist.: " + Integer.toString(distance), 0, 5);
+			cont.processUSData(distance);		
 			// now take action depending on value
 			try { Thread.sleep(10); } catch(Exception e){}		// Poor man's timed sampling
 		}

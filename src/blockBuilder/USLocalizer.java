@@ -205,7 +205,8 @@ public class USLocalizer {
 			distance = DISTANCE_THRESHHOLD;
 
 		try { Thread.sleep(25); } catch(Exception e){}
-
+		LCD.clear(3);
+		LCD.drawString("Front US: " + Double.toString(distance), 0, 3);
 		return distance;
 	}
 

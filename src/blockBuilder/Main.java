@@ -45,12 +45,12 @@ public class Main {
 				float[] frontUsData = new float[frontUsValue.sampleSize()];				
 				
 				SensorModes rightUsSensor = new EV3UltrasonicSensor(rightUsPort);
-				SampleProvider rightUsValue = frontUsSensor.getMode("Distance");		
-				float[] rightUsData = new float[frontUsValue.sampleSize()];				
+				SampleProvider rightUsValue = rightUsSensor.getMode("Distance");		
+				float[] rightUsData = new float[rightUsValue.sampleSize()];				
 				
 				SensorModes leftUsSensor = new EV3UltrasonicSensor(leftUsPort);
-				SampleProvider leftUsValue = frontUsSensor.getMode("Distance");		
-				float[] leftUsData = new float[frontUsValue.sampleSize()];				
+				SampleProvider leftUsValue = leftUsSensor.getMode("Distance");		
+				float[] leftUsData = new float[leftUsValue.sampleSize()];				
 
 				//Color sensor setup works just like US, but there are 3 of them
 				// colorValue provides samples from this instance
@@ -68,13 +68,21 @@ public class Main {
 				leftMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
 				rightMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
 				
+				SideUSController rightUsControl = new SideUSController(5);
+				UltrasonicPoller rightUs = new UltrasonicPoller(rightUsValue, rightUsData, rightUsControl );
+				SideUSController leftUsControl = new SideUSController(4);
+				UltrasonicPoller leftUs = new UltrasonicPoller(leftUsValue, leftUsData, leftUsControl);
+			
+				rightUs.start();
+				leftUs.start();
+				
 				Odometer odo = new Odometer(Constants.ODOMETER_INTERVAL, true);
 				odo.start();
 				nav = new Navigator(odo);
 				nav.start();
-				nav.turnBy(360);
-//				nav.goForward(30);
-				completeCourse();
+				//nav.turnBy(360);
+
+				//completeCourse();
 				//	public USLocalizer(Navigator nav, Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
 
 				USLocalizer localizer = new USLocalizer(nav, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);

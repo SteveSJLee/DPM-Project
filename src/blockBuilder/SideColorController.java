@@ -1,6 +1,9 @@
 package blockBuilder;
 
-public class RightColorController extends Thread implements ColorController {
+import java.util.Arrays;
+import java.util.ArrayList;
+
+public class SideColorController extends Thread implements ColorController {
 
 	@Override
 	public void processColorData(int[] color) {

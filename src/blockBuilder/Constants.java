@@ -14,6 +14,9 @@ public final class Constants {
 	public static final int CLAW_SPEED = 200;
 	public static final int LIFT_SPEED = 100;
 	
+	//filter
+	public static final int SAMPLE_SIZE = 20;
+	
 	//odometer
 	public static final int ODOMETER_INTERVAL = 30;
 	
