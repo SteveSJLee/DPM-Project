@@ -80,7 +80,7 @@ public class Main {
 				SideUSController leftUsControl = new SideUSController(4);
 				UltrasonicPoller leftUs = new UltrasonicPoller(leftUsValue, leftUsData, leftUsControl);
 				
-				SideUSController frontUsControl = new SideUSController(6);
+				SideUSController frontUsControl = new SideUSController(5);
 				UltrasonicPoller frontUs = new UltrasonicPoller(frontUsValue, frontUsData, frontUsControl );
 				
 				

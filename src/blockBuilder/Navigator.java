@@ -5,6 +5,7 @@
 
 package blockBuilder;
 
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.sensor.SensorModes;
 
 
@@ -39,7 +40,7 @@ public class Navigator extends BasicNavigator {
 
 	private double destx, desty;
 
-	final static int SLEEP_TIME = 50;
+	final static int SLEEP_TIME = 100;
 
 	UltrasonicPoller usSensor;
 
@@ -105,6 +106,8 @@ public class Navigator extends BasicNavigator {
 				}
 				break;
 			case TURNING:
+				LCD.clear(7);
+				LCD.drawString("TURNING", 0, 7);
 				/*
 				 * Note: you could probably use the original turnTo()
 				 * from BasicNavigator here without doing any damage.
@@ -126,6 +129,8 @@ public class Navigator extends BasicNavigator {
 				}
 				break;
 			case TRAVELLING:
+				LCD.clear(7);
+				LCD.drawString("MOVING", 0, 7);
 //				Sound.buzz();
 				if (checkEmergency()) { // order matters!
 					state = State.EMERGENCY;
@@ -152,6 +157,8 @@ public class Navigator extends BasicNavigator {
 //				
 //				break;
 			case EMERGENCY:
+				LCD.clear(7);
+				LCD.drawString("EMERGENCY", 0, 7);
 				if (avoidance.obstructionAtPoint()){
 					stopMotors();
 					isNavigating = false;

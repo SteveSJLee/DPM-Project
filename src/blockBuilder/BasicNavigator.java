@@ -5,7 +5,9 @@
 
 package blockBuilder;
 
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.utility.Delay;
 
 public class BasicNavigator extends Thread {
 	public Odometer odometer;
@@ -74,9 +76,23 @@ public class BasicNavigator extends Thread {
 
 	public void travelTo(double x, double y) {
 		double minAng;
+		int checkHeadingTimer = 0;
+		LCD.clear(4);
 		while (!checkIfDone(x,y)) {
-			minAng = getDestAngle(x,y);
-			this.turnTo(minAng, false);
+			checkHeadingTimer++;
+			
+			LCD.drawString("COUNTER: " + Integer.toString(checkHeadingTimer), 0, 4);
+			if(checkHeadingTimer >= 50){
+				minAng = getDestAngle(x,y);
+				double error = minAng - this.odometer.getTheta();
+				if(Math.abs(error) > Constants.ODO_ANGLE_ERROR)
+					this.turnTo(minAng, false);
+				checkHeadingTimer = 0;
+			
+			}
+			
+			
+			
 			this.setSpeeds(Constants.FAST_SPEED, Constants.FAST_SPEED);
 		}
 		this.setSpeeds(0, 0);

@@ -22,7 +22,7 @@ public final class Constants {
 	
 	//odometer errors
 	public static final double ODO_DISTANCE_ERROR = 2; //Was 0.5
-	public static final double ODO_ANGLE_ERROR = 2.0; //3 in lab 5
+	public static final double ODO_ANGLE_ERROR = 10.0; //3 in lab 5
 	
 	//obstacle avoidance
 	public static final double AVOID_BAND_CENTER = 0;
