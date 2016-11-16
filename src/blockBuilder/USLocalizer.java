@@ -182,7 +182,8 @@ public class USLocalizer {
 		odo.setPosition(pos, new boolean [] {true, true, true});
 		Main.leftMotor.stop(true);
 		Main.rightMotor.stop(false);
-		
+		int array[] = {1, 2, 3};
+		int x = array.length; 
 		//calculating values of x, y coordinates
 
 		nav.turnTo(RIGHT_ANGLE*2, true);//allows us to find x

@@ -28,9 +28,9 @@ public class Main {
 	/* Sensors:
 	 *  - 1 Ultrasonic in the front
 	 *  - 3 Color sensors: 1 on the front, and 2 for the wheels ( 1 for each ) */
-	private static final Port frontUsPort = LocalEV3.get().getPort("S1");	
+	private static final Port frontUsPort = LocalEV3.get().getPort("S3");	
 	private static final Port rightUsPort = LocalEV3.get().getPort("S2");
-	private static final Port leftUsPort = LocalEV3.get().getPort("S3");
+	private static final Port leftUsPort = LocalEV3.get().getPort("S1");
 //	private static final Port rightColorPort = LocalEV3.get().getPort("S4");
 	
 	public static void main(String[] args){
@@ -86,7 +86,7 @@ public class Main {
 				//	public USLocalizer(Navigator nav, Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
 
 				USLocalizer localizer = new USLocalizer(nav, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
-				//localizer.doLocalization();
+				localizer.doLocalization();
 				
 				//use threads for both sensors to have them poll continuosly
 		
