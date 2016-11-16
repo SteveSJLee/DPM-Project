@@ -56,7 +56,7 @@ public class Main {
 
 				
 				SensorModes frontColorSensor = new EV3ColorSensor(frontColorPort);
-				SampleProvider frontColorValue = frontColorSensor.getMode("RGB");
+				SampleProvider frontColorValue = frontColorSensor.getMode("ColorID");
 				float[] frontColorData = new float[frontColorValue.sampleSize()];
 				
 				//Color sensor setup works just like US, but there are 3 of them
@@ -83,12 +83,16 @@ public class Main {
 				SideUSController frontUsControl = new SideUSController(6);
 				UltrasonicPoller frontUs = new UltrasonicPoller(frontUsValue, frontUsData, frontUsControl );
 				
-				rightUs.start();
-				leftUs.start();
+				
+				
+				//rightUs.start();
+				//leftUs.start();
 				frontUs.start();
 				
 				Odometer odo = new Odometer(Constants.ODOMETER_INTERVAL, true);
 				odo.start();
+				
+				
 				
 				nav = new Navigator(odo, frontUs, frontColorSensor, frontColorData);
 				nav.start();

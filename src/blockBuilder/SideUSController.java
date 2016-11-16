@@ -31,7 +31,7 @@ public class SideUSController extends Thread implements UltrasonicController {
 	}
 	
 	private ArrayList<Integer> dataList;
-	public float filteredDistance=0;
+	public static float filteredDistance=0;
 	
 	public void run(){
 		this.dataList = new ArrayList<Integer>();

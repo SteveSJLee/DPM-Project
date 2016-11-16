@@ -20,6 +20,7 @@ public class UltrasonicPoller extends Thread{
 	private SampleProvider us;
 	private UltrasonicController cont;
 	public int distance;
+	public float filteredDistance;
 	private float[] usData;
 	
 	public UltrasonicPoller(SampleProvider us, float[] usData, UltrasonicController cont) {
@@ -53,5 +54,7 @@ public class UltrasonicPoller extends Thread{
 		// TODO Auto-generated method stub
 		return distance;
 	}
+	
+	
 
 }

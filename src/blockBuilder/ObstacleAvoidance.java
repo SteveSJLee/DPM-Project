@@ -4,6 +4,7 @@
 package blockBuilder;
 
 import lejos.hardware.Sound;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
@@ -50,13 +51,25 @@ public class ObstacleAvoidance extends Thread {
 		nav.setSpeeds(30, 30);
 		Sound.beep();
 		//get closer to the newly found target
-		while (nav.usSensor.getDistance() > 3 && nav.usSensor.getDistance()< 25) {
-
+//		while (nav.usSensor.getDistance() > 5) {
+//			//do nothing, keep moving forward
+//		}
+//		
+		while(SideUSController.filteredDistance > Constants.BLOCK_DISTANCE){
+			//do nothing, keep moving
+			LCD.clear(7);
+			LCD.drawString("LOOKING FOR BLOCKS", 0, 7);
 		}
+		
+		LCD.clear(7);
+		LCD.drawString("FOUND SOMETHING", 0, 7);
+		
 		nav.stopMotors();
 		
 		//detect whether or not it is a block or non block
-		if (getColorData() < 7 && getColorData() > 5) {
+		
+		//FINDS BLOCK:
+		if (getColorData() < 8 && getColorData() > 5) {
 			//this means it is a block
 //			Sound.buzz();
 //			Sound.buzz();
@@ -73,6 +86,7 @@ public class ObstacleAvoidance extends Thread {
 //				nav.setSpeeds(-30, -30);
 //			}
 			
+			//DOESNT FIND BLOCK
 		} else  {
 			//non block or a wall
 			Sound.buzz();

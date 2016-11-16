@@ -27,6 +27,9 @@ public final class Constants {
 	//obstacle avoidance
 	public static final double AVOID_BAND_CENTER = 0;
 	public static final double AVOID_BANDWIDTH = 0;
+	public static final float BLOCK_DISTANCE = 5;
+	public static final int BLOCK_LOWER_COLOR = 6;
+	public static final int BLOCK_UPPER_COLOR = 7;
 	
 	//localization
 	public static final double US_DISTANCE_CUTOFF = 100;
