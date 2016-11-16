@@ -10,7 +10,7 @@ import lejos.hardware.lcd.LCD;
 //NOTE that we do not implement the rising edge localization type as we do not use it in our program.
 
 
-public class USLocalizer {
+public class USLocalizer implements UltrasonicController {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
 	private final double TILE_SIZE = 30.48;
 	private final double SENSOR_CENTER_DIST = -1; 
@@ -26,11 +26,12 @@ public class USLocalizer {
 	private final int RIGHT_ANGLE = 90;
 
 
-	private Navigator nav;
+	private BasicNavigator nav;
 	private Odometer odo;
 	private SampleProvider usSensor;
 	private float[] usData;
 	private LocalizationType locType;
+	private int wallDistance;
 
 
 	// Constructor
@@ -42,7 +43,7 @@ public class USLocalizer {
 	 * @param usData a float array to store the ultrasonic sensor data
 	 * @param locType localization type; falling edge or rising edge
 	 */
-	public USLocalizer(Navigator nav, Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
+	public USLocalizer(BasicNavigator nav, Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
 		this.nav = nav;
 		this.odo = odo;
 		this.usSensor = usSensor;
@@ -123,7 +124,8 @@ public class USLocalizer {
 		angleA = (firstPoint + secondPoint)/2;
 
 		// Turn a certain angle to make sure the sensor do not detect the same wall a second time
-		nav.turnTo((secondPoint+ALMOST_RIGHT_ANGLE)%FULL_CIRCLE, false);
+//		nav.turnTo((secondPoint+ALMOST_RIGHT_ANGLE)%FULL_CIRCLE, false);							///////////////////
+		nav.turnTo((secondPoint)%FULL_CIRCLE, false);
 
 		/**							 /**
 		 ** Localize the second wall  **
@@ -185,11 +187,14 @@ public class USLocalizer {
 		
 		//calculating values of x, y coordinates
 
-		nav.turnTo(RIGHT_ANGLE*2, true);//allows us to find x
+	//	nav.turnTo(RIGHT_ANGLE*2, true);//allows us to find x
+		nav.turnTo(270, true);//allows us to find x
+
 		pos[1] = -TILE_SIZE+getFilteredData()+SENSOR_CENTER_DIST;
 		
-		
-		nav.turnTo(RIGHT_ANGLE*3, true);//allows us to find y
+		//		nav.turnTo(RIGHT_ANGLE*3, true);//allows us to find y
+
+		nav.turnTo(180, true);//allows us to find y
 		pos[0] = -TILE_SIZE+getFilteredData()+SENSOR_CENTER_DIST - Y_OFFSET;
 		pos[2] = odo.getTheta();//setting the angle to its current value
 
@@ -224,6 +229,18 @@ public class USLocalizer {
 		LCD.clear(3);
 		LCD.drawString("Front US: " + Double.toString(distance), 0, 3);
 		return distance;
+	}
+
+	@Override
+	public void processUSData(int distance) {
+		this.wallDistance = distance;
+		
+	}
+
+	@Override
+	public int readUSDistance() {
+		// TODO Auto-generated method stub
+		return this.wallDistance;
 	}
 
 }

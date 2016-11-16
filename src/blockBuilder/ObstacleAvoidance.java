@@ -58,20 +58,20 @@ public class ObstacleAvoidance extends Thread {
 		//detect whether or not it is a block or non block
 		if (getColorData() < 7 && getColorData() > 5) {
 			//this means it is a block
-			Sound.buzz();
-			Sound.buzz();
+//			Sound.buzz();
+//			Sound.buzz();
 			//grabs block
-			armMotor.setSpeed(100);
-			armMotor.rotate(100, false);
-			nav.travelTo(63, 63, false);
-			nav.turnTo(45, true);
-			armMotor.rotate(-100, false);
+//			armMotor.setSpeed(100);
+//			armMotor.rotate(100, false);
+//			nav.travelTo(63, 63, false);
+//			nav.turnTo(45, true);
+//			armMotor.rotate(-100, false);
 			Sound.beep();
 			Sound.beep();
 			Sound.beep();
-			while(nav.usSensor.getDistance()<10){
-				nav.setSpeeds(-30, -30);
-			}
+//			while(nav.usSensor.getDistance()<10){
+//				nav.setSpeeds(-30, -30);
+//			}
 			
 		} else  {
 			//non block or a wall
