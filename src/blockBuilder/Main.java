@@ -9,6 +9,7 @@ import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.*;
 import lejos.robotics.SampleProvider;
+import blockBuilder.USLocalizer;
 
 /* Team 13's final DPM project.
  * Software Developpers: Patrick, Ilyas, Ahmet
@@ -31,6 +32,7 @@ public class Main {
 	private static final Port frontUsPort = LocalEV3.get().getPort("S3");	
 	private static final Port rightUsPort = LocalEV3.get().getPort("S2");
 	private static final Port leftUsPort = LocalEV3.get().getPort("S1");
+	private static final Port frontColorPort = LocalEV3.get().getPort("S4");
 //	private static final Port rightColorPort = LocalEV3.get().getPort("S4");
 	
 	public static void main(String[] args){
@@ -52,16 +54,21 @@ public class Main {
 				SampleProvider leftUsValue = leftUsSensor.getMode("Distance");		
 				float[] leftUsData = new float[leftUsValue.sampleSize()];				
 
+				
+				SensorModes frontColorSensor = new EV3ColorSensor(frontColorPort);
+				SampleProvider frontColorValue = frontColorSensor.getMode("RGB");
+				float[] frontColorData = new float[frontColorValue.sampleSize()];
+				
 				//Color sensor setup works just like US, but there are 3 of them
 				// colorValue provides samples from this instance
 				// colorData is the buffer in which data are returned
-//				SensorModes frontColorSensor = new EV3ColorSensor(frontColorPort);
+				
 //				SensorModes leftColorSensor = new EV3ColorSensor(leftColorPort);
 //				SensorModes rightColorSensor = new EV3ColorSensor(rightColorPort);
-//				SampleProvider frontColorValue = frontColorSensor.getMode("RGB");		
+						
 //				SampleProvider leftColorvalue = leftColorSensor.getMode("RGB");		
 //				SampleProvider rightColorvalue = rightColorSensor.getMode("RGB");		
-//				float[] frontColorData = new float[frontColorValue.sampleSize()];	
+					
 //				float[] leftColorData = new float[leftColorvalue.sampleSize()];			
 //				float[] rightColorData = new float[rightColorvalue.sampleSize()];			
 				
@@ -72,21 +79,31 @@ public class Main {
 				UltrasonicPoller rightUs = new UltrasonicPoller(rightUsValue, rightUsData, rightUsControl );
 				SideUSController leftUsControl = new SideUSController(4);
 				UltrasonicPoller leftUs = new UltrasonicPoller(leftUsValue, leftUsData, leftUsControl);
-			
+				
+				SideUSController frontUsControl = new SideUSController(6);
+				UltrasonicPoller frontUs = new UltrasonicPoller(frontUsValue, frontUsData, frontUsControl );
+				
 				rightUs.start();
 				leftUs.start();
+				frontUs.start();
 				
 				Odometer odo = new Odometer(Constants.ODOMETER_INTERVAL, true);
 				odo.start();
-				nav = new Navigator(odo);
+				
+				nav = new Navigator(odo, frontUs, frontColorSensor, frontColorData);
 				nav.start();
 				//nav.turnBy(360);
 
-				//completeCourse();
+				
 				//	public USLocalizer(Navigator nav, Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
 
-				USLocalizer localizer = new USLocalizer(nav, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
-				localizer.doLocalization();
+//				BasicNavigator basicNav = new BasicNavigator(odo);
+//				ahmetlocalizer ahm = new ahmetlocalizer(odo, basicNav, frontUsValue, frontUsData, ahmetlocalizer.LocalizationType.FALLING_EDGE, rightMotor, leftMotor );
+//				ahm.doLocalization();
+//				USLocalizer localizer = new USLocalizer(basicNav, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
+//				localizer.doLocalization();
+				
+				completeCourse();
 				
 				//use threads for both sensors to have them poll continuosly
 		

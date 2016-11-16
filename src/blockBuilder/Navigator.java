@@ -28,7 +28,7 @@ import lejos.hardware.sensor.SensorModes;
 public class Navigator extends BasicNavigator {
 
 	enum State {
-		INIT, TURNING, TRAVELLING /*, EMERGENCY, SEARCHING*/
+		INIT, TURNING, TRAVELLING, EMERGENCY/*, SEARCHING*/
 	};
 
 	State state;
@@ -46,11 +46,11 @@ public class Navigator extends BasicNavigator {
 	/**
 	 * @param odo an instance of the odometer class
 	 */
-	public Navigator(Odometer odo/*, UltrasonicPoller usSensor, SensorModes colorSensor, float [] colorData*/) {
+	public Navigator(Odometer odo, UltrasonicPoller usSensor, SensorModes colorSensor, float [] colorData) {
 		super(odo);
-		/*this.usSensor = usSensor;
+		this.usSensor = usSensor;
 		this.colorSensor = colorSensor;
-		this.colorData = colorData;*/
+		this.colorData = colorData;
 	}
 
 	
@@ -127,11 +127,11 @@ public class Navigator extends BasicNavigator {
 				break;
 			case TRAVELLING:
 //				Sound.buzz();
-				/*if (checkEmergency()) { // order matters!
+				if (checkEmergency()) { // order matters!
 					state = State.EMERGENCY;
 					avoidance = new ObstacleAvoidance(this, colorSensor, colorData, destx, desty);
 					avoidance.start();
-				} else */if (!checkIfDone(destx, desty)) {
+				} else if (!checkIfDone(destx, desty)) {
 					updateTravel();
 				} else { // Arrived!
 					stopMotors();
@@ -151,7 +151,7 @@ public class Navigator extends BasicNavigator {
 //				state = State.TRAVELLING;
 //				
 //				break;
-			/*case EMERGENCY:
+			case EMERGENCY:
 				if (avoidance.obstructionAtPoint()){
 					stopMotors();
 					isNavigating = false;
@@ -160,7 +160,7 @@ public class Navigator extends BasicNavigator {
 				else if (avoidance.resolved()) {
 					state = State.TURNING;
 				} 
-				break; */
+				break; 
 			}
 //			Log.log(Log.Sender.Navigator, "state: " + state);
 			try {
@@ -171,9 +171,9 @@ public class Navigator extends BasicNavigator {
 		}
 	}
 
-	/*private boolean checkEmergency() {
+	private boolean checkEmergency() {
 		return usSensor.getDistance() < 23;
-	}*/
+	}
 
 
 	private void turnTo(double angle) {
