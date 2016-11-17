@@ -41,6 +41,8 @@ public final class Constants {
 	
 	//block building
 	public static final double BLOCK_HEIGHT = 2.5; //cm
-
 	public static final int DEFAULT_TIMEOUT_PERIOD = 20;
+	
+	//zones
+	public static final int[] TEMP_GREEN_ZONE = {0, 120};
 }

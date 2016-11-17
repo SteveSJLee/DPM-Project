@@ -17,7 +17,6 @@ public class ObstacleAvoidance extends Thread {
 	private SampleProvider colorSensor;
 	private float[] colorData;
 	private double destx, desty;
-	private static final EV3LargeRegulatedMotor armMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 
 	public ObstacleAvoidance(Navigator nav, SampleProvider colorSensor, float[] colorData,
 			double destx, double desty) {
@@ -82,6 +81,36 @@ public class ObstacleAvoidance extends Thread {
 			Sound.beep();
 			Sound.beep();
 			Sound.beep();
+			
+			//if the claw has no blocks, use the default raise, lower, and grab operations.
+			if(!Claw.hasBlock){
+				Claw.lower();
+				Claw.grab();
+				Claw.raise();
+				Claw.hasBlock = true;
+				Claw.numberOfBlocks++;
+//				nav.travelTo(Constants.TEMP_GREEN_ZONE[0], Constants.TEMP_GREEN_ZONE[1]);
+//				Claw.lower();
+//				Claw.release();
+//				Claw.raise();
+				
+			} else {
+				Claw.lowerWithBlocks();
+				Claw.release();
+				Claw.lowerToGroundWithBlocks();
+				Claw.grab();
+				Claw.numberOfBlocks++;
+				Claw.raise();
+				nav.travelTo(Constants.TEMP_GREEN_ZONE[0], Constants.TEMP_GREEN_ZONE[1]);
+				Claw.lower();
+				Claw.release();
+				Claw.raise();
+				Claw.numberOfBlocks = 0;
+				Claw.hasBlock = false;
+				
+				
+			}
+			
 //			while(nav.usSensor.getDistance()<10){
 //				nav.setSpeeds(-30, -30);
 //			}
@@ -129,12 +158,19 @@ public class ObstacleAvoidance extends Thread {
 		double colorLevel = colorData[0];
 		return colorLevel;
 	}
-
+	
+	
+	/**
+	 * @return whether or not the robot is safe from obstacles
+	 */
 	public boolean resolved() {
 		return safe;
 	}
 	
-	//method to go to the next point if there is an obstruction at the current point
+
+	/**
+	 * @return method to go to the next point if there is an obstruction at the current point
+	 */
 	public boolean obstructionAtPoint(){
 		return obstruction;
 	}
