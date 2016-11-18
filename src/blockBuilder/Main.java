@@ -169,7 +169,7 @@ public class Main {
 		if (buttonChoice == Button.ID_LEFT) { // start all the threads
 
 			int angle = 360 * 6;
-			int claw = 320;
+			int claw = 370;
 			liftMotor.setSpeed(400);
 			// each rotation => 1.5cm
 			liftMotor.rotate(-angle, false);
