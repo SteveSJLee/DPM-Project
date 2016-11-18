@@ -45,4 +45,20 @@ public final class Constants {
 	
 	//zones
 	public static final int[] TEMP_GREEN_ZONE = {0, 120};
+	
+	//wifi
+	public static final String SERVER_IP = "192.168.2.6";
+	public static final int TEAM_NUMBER = 1;
+	public static final String CSC = "CSC";
+	public static final String BSC = "BSC";
+	public static final String LRZy = "LRZy";
+	public static final String UGZy = "UGZy";
+	public static final String LRZx = "LRZx";
+	public static final String UGZx = "UGZx";
+	public static final String LGZy = "LGZy";
+	public static final String LGZx = "LGZx";
+	public static final String URZy = "URZy";
+	public static final String CTN = "CTN";
+	public static final String URZx = "URZx";
+	public static final String BTN = "BTN";
 }

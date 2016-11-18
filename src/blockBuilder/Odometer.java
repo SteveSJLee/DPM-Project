@@ -286,7 +286,7 @@ public class Odometer implements TimerListener {
 		
 		this.x = 0.0;
 		this.y = 0.0;
-		this.theta = 0.0;
+		this.theta = 90.0;
 		this.oldDH = new double[2];
 		this.dDH = new double[2];
 
@@ -317,7 +317,7 @@ public class Odometer implements TimerListener {
 		rightTacho = Main.rightMotor.getTachoCount();
 
 		data[0] = (leftTacho * leftRadius + rightTacho * rightRadius) * Math.PI / 360.0;
-		data[1] = -(rightTacho * rightRadius - leftTacho * leftRadius) / width;
+		data[1] = (rightTacho * rightRadius - leftTacho * leftRadius) / width;
 	}
 	
 	/*
@@ -333,8 +333,8 @@ public class Odometer implements TimerListener {
 			theta += dDH[1];
 			theta = fixDegAngle(theta);
 
-			x += dDH[0] * Math.sin(Math.toRadians(theta));
-			y += dDH[0] * Math.cos(Math.toRadians(theta));
+			x += dDH[0] * Math.cos(Math.toRadians(theta));
+			y += dDH[0] * Math.sin(Math.toRadians(theta));
 		}
 
 		oldDH[0] += dDH[0];

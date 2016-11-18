@@ -3,14 +3,13 @@ package blockBuilder;
 import lejos.robotics.SampleProvider;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
-import lejos.hardware.lcd.LCD;
 
 //*********************
 //class used to localize the robot and move it to position (0, 0) on the surface
 //NOTE that we do not implement the rising edge localization type as we do not use it in our program.
 
 
-public class USLocalizer implements UltrasonicController {
+public class USLocalizer {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
 	private final double TILE_SIZE = 30.48;
 	private final double SENSOR_CENTER_DIST = -1; 
@@ -31,18 +30,9 @@ public class USLocalizer implements UltrasonicController {
 	private SampleProvider usSensor;
 	private float[] usData;
 	private LocalizationType locType;
-	private int wallDistance;
 
 
 	// Constructor
-	
-	/**
-	 * @param nav an instance of the navigator class
-	 * @param odo an instance of the odometer class
-	 * @param usSensor an ultrasonic sensor
-	 * @param usData a float array to store the ultrasonic sensor data
-	 * @param locType localization type; falling edge or rising edge
-	 */
 	public USLocalizer(BasicNavigator nav, Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
 		this.nav = nav;
 		this.odo = odo;
@@ -52,10 +42,6 @@ public class USLocalizer implements UltrasonicController {
 	}
 
 	// Localize the robot using an ultrasonic Sensor and 2 walls
-	
-	/**
-	 *  performs localization using a single ultrasonic sensor by looking for 2 walls
-	 */
 	public void doLocalization() {
 		// Variables used during the process
 		double [] pos = new double [3];
@@ -68,8 +54,8 @@ public class USLocalizer implements UltrasonicController {
 		float distance = getFilteredData();
 
 		// Set the motors's speed
-		Main.leftMotor.setSpeed(ROTATION_SPEED);
-		Main.rightMotor.setSpeed(ROTATION_SPEED);
+		odo.getLeftMotor().setSpeed(ROTATION_SPEED);
+		odo.getRightMotor().setSpeed(ROTATION_SPEED);
 
 		// Localization using the Falling Edge method
 		//which is the only method implemented
@@ -78,27 +64,12 @@ public class USLocalizer implements UltrasonicController {
 		 ** Localize the first wall  **
 		/**							 **/
 
-		
-		
 		// ClockWise Rotation
-		Main.leftMotor.forward();
-		Main.rightMotor.backward();
-		boolean isFacingWall;
-		if(distance < 50)
-			isFacingWall = true;
-		else
-			isFacingWall = false;
-		do{
-			LCD.clear(3);
-			LCD.drawString("FACING WALL", 0, 3);
-			distance = getFilteredData();
-			if(distance > 50)
-				isFacingWall = false;
-		} while(isFacingWall);
-		
+		odo.getLeftMotor().forward();
+		odo.getRightMotor().backward();
+
 		while(!firstLocalizationDone) {
-			LCD.clear(3);
-			LCD.drawString("FIRST LOCALIZATION", 0, 3);
+
 			synchronized (this) {
 				// Calculate the current distance
 				distance = getFilteredData();
@@ -124,23 +95,20 @@ public class USLocalizer implements UltrasonicController {
 		angleA = (firstPoint + secondPoint)/2;
 
 		// Turn a certain angle to make sure the sensor do not detect the same wall a second time
-//		nav.turnTo((secondPoint+ALMOST_RIGHT_ANGLE)%FULL_CIRCLE, false);							///////////////////
-		nav.turnTo((secondPoint)%FULL_CIRCLE, false);
+		nav.turnTo((secondPoint+ALMOST_RIGHT_ANGLE)%FULL_CIRCLE, false);
 
 		/**							 /**
 		 ** Localize the second wall  **
 		/**							  **/
 
 		// CounterClockWise Rotation
-		Main.leftMotor.backward();
-		Main.rightMotor.forward();
+		odo.getLeftMotor().backward();
+		odo.getRightMotor().forward();
 
 		// Reuse and reset the same boolean
 		firstPointDetected = false;
 
 		while(!secondLocalizationDone) {
-			LCD.clear(3);
-			LCD.drawString("SECOND LOCALIZATION", 0, 3);
 			synchronized (this) {
 
 				// Calculate the current distance
@@ -182,42 +150,28 @@ public class USLocalizer implements UltrasonicController {
 
 		// Set the position and stops the motor 
 		odo.setPosition(pos, new boolean [] {true, true, true});
-		Main.leftMotor.stop(true);
-		Main.rightMotor.stop(false);
-		int array[] = {1, 2, 3};
-		int x = array.length; 
+		odo.getLeftMotor().stop(true);
+		odo.getRightMotor().stop(false);
+		
 		//calculating values of x, y coordinates
 
-	//	nav.turnTo(RIGHT_ANGLE*2, true);//allows us to find x
-		nav.turnTo(270, true);//allows us to find x
-
-		pos[1] = -TILE_SIZE+getFilteredData()+SENSOR_CENTER_DIST;
+		nav.turnTo(RIGHT_ANGLE*2, true);//allows us to find x
+		pos[0] = -TILE_SIZE+getFilteredData()+SENSOR_CENTER_DIST;
 		
-		//		nav.turnTo(RIGHT_ANGLE*3, true);//allows us to find y
-
-		nav.turnTo(180, true);//allows us to find y
-		pos[0] = -TILE_SIZE+getFilteredData()+SENSOR_CENTER_DIST - Y_OFFSET;
+		
+		nav.turnTo(RIGHT_ANGLE*3, true);//allows us to find y
+		pos[1] = -TILE_SIZE+getFilteredData()+SENSOR_CENTER_DIST - Y_OFFSET;
 		pos[2] = odo.getTheta();//setting the angle to its current value
 
 		odo.setPosition(pos, new boolean [] {true, true, true});
 		
-		LCD.clear(3);
-		LCD.drawString("TRAVELLING", 0, 3);
-		
 		nav.travelTo(0.0,0.0);
-
-		LCD.clear(3);
-		LCD.drawString("TURNING", 0, 3);
 		nav.turnTo(0.0,  false);
 
 		//The robot is now in position to perform object search
 	}
 
 	// Method returning filtered values
-	
-	/**
-	 * @return the ultrasnoic data passed through a clipping filter
-	 */
 	private float getFilteredData() {
 		usSensor.fetchSample(usData, 0);
 		float distance = (float) (usData[0]*100.0);
@@ -227,21 +181,8 @@ public class USLocalizer implements UltrasonicController {
 			distance = DISTANCE_THRESHHOLD;
 
 		try { Thread.sleep(25); } catch(Exception e){}
-		LCD.clear(3);
-		LCD.drawString("Front US: " + Double.toString(distance), 0, 3);
+
 		return distance;
-	}
-
-	@Override
-	public void processUSData(int distance) {
-		this.wallDistance = distance;
-		
-	}
-
-	@Override
-	public int readUSDistance() {
-		// TODO Auto-generated method stub
-		return this.wallDistance;
 	}
 
 }

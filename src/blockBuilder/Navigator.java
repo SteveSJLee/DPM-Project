@@ -188,13 +188,13 @@ public class Navigator extends BasicNavigator {
 		error = angle - this.odometer.getTheta();
 
 		if (error < -180.0) {
-			this.setSpeeds(Constants.SLOW_SPEED, -Constants.SLOW_SPEED);
+			this.setSpeeds(-Constants.SLOW_SPEED, Constants.SLOW_SPEED);
 		} else if (error < 0.0) {
-			this.setSpeeds(-Constants.SLOW_SPEED, Constants.SLOW_SPEED);
-		} else if (error > 180.0) {
-			this.setSpeeds(-Constants.SLOW_SPEED, Constants.SLOW_SPEED);
-		} else {
 			this.setSpeeds(Constants.SLOW_SPEED, -Constants.SLOW_SPEED);
+		} else if (error > 180.0) {
+			this.setSpeeds(Constants.SLOW_SPEED, -Constants.SLOW_SPEED);
+		} else {
+			this.setSpeeds(-Constants.SLOW_SPEED, Constants.SLOW_SPEED);
 		}
 
 	}

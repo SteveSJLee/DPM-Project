@@ -111,13 +111,13 @@ public class BasicNavigator extends Thread {
 			error = angle - this.odometer.getTheta();
 
 			if (error < -180.0) {
-				this.setSpeeds(Constants.SLOW_SPEED, -Constants.SLOW_SPEED);
+				this.setSpeeds(-Constants.SLOW_SPEED, Constants.SLOW_SPEED);
 			} else if (error < 0.0) {
-				this.setSpeeds(-Constants.SLOW_SPEED, Constants.SLOW_SPEED);
-			} else if (error > 180.0) {
-				this.setSpeeds(-Constants.SLOW_SPEED, Constants.SLOW_SPEED);
-			} else {
 				this.setSpeeds(Constants.SLOW_SPEED, -Constants.SLOW_SPEED);
+			} else if (error > 180.0) {
+				this.setSpeeds(Constants.SLOW_SPEED, -Constants.SLOW_SPEED);
+			} else {
+				this.setSpeeds(-Constants.SLOW_SPEED, Constants.SLOW_SPEED);
 			}
 		}
 
@@ -220,7 +220,7 @@ public class BasicNavigator extends Thread {
 	}
 	//get angle of where it wants to go
 	protected double getDestAngle(double x, double y) {
-		double minAng = (Math.atan2(x - odometer.getX(), y - odometer.getY()))
+		double minAng = (Math.atan2(y - odometer.getY(), x - odometer.getX()))
 				* (180.0 / Math.PI);
 		if (minAng < 0) {
 			minAng += 360.0;
