@@ -1,6 +1,6 @@
 package blockBuilder;
-
 import lejos.robotics.SampleProvider;
+import lejos.utility.Delay;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 
@@ -25,15 +25,16 @@ public class USLocalizer {
 	private final int RIGHT_ANGLE = 90;
 
 
-	private BasicNavigator nav;
+	private Navigation nav;
 	private Odometer odo;
 	private SampleProvider usSensor;
 	private float[] usData;
 	private LocalizationType locType;
+	public static boolean isComplete = false;
 
 
 	// Constructor
-	public USLocalizer(BasicNavigator nav, Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
+	public USLocalizer(Navigation nav, Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
 		this.nav = nav;
 		this.odo = odo;
 		this.usSensor = usSensor;
@@ -76,7 +77,7 @@ public class USLocalizer {
 
 				// First point has to be smaller than the MINIMUM_DIST + the noise margin
 				if ((distance <= MINIMUM_DIST + NOISE_MARGIN) && !firstPointDetected) {
-					firstPoint = odo.getTheta();
+					firstPoint = odo.getAng();
 					firstPointDetected = true;
 				}
 
@@ -84,7 +85,7 @@ public class USLocalizer {
 
 				if ((distance <= MINIMUM_DIST - NOISE_MARGIN) && firstPointDetected) {
 
-					secondPoint = odo.getTheta();
+					secondPoint = odo.getAng();
 					firstLocalizationDone = true;
 				}
 				//  The first localization of wall is over
@@ -116,7 +117,7 @@ public class USLocalizer {
 
 				// First point has to be smaller than the MINIMUM_DIST + the noise margin
 				if ((distance <= MINIMUM_DIST + NOISE_MARGIN) && !firstPointDetected) {
-					firstPoint = odo.getTheta();
+					firstPoint = odo.getAng();
 					firstPointDetected = true;
 
 				}
@@ -124,7 +125,7 @@ public class USLocalizer {
 				// Second point has to be smaller than the minimum distance - the noise margin
 				//  The second localization of wall is over
 				if ((distance <= MINIMUM_DIST - NOISE_MARGIN) && (firstPointDetected)) {
-					secondPoint = odo.getTheta();
+					secondPoint = odo.getAng();
 					secondLocalizationDone = true;
 				}	
 			}
@@ -139,12 +140,12 @@ public class USLocalizer {
 
 		// Depending if angleA is smaller or bigger than angleB, we have a different correction
 		if (angleA < angleB) {
-			pos[2] = odo.getTheta() + DIAGONAL_SMALLER_ANGLE - (angleA + angleB)/2;
+			pos[2] = odo.getAng() + DIAGONAL_SMALLER_ANGLE - (angleA + angleB)/2;
 			Sound.beepSequence();
 		}
 
 		else {
-			pos[2] = odo.getTheta() + DIAGONAL_LARGER_ANGLE - (angleA + angleB)/2;
+			pos[2] = odo.getAng() + DIAGONAL_LARGER_ANGLE - (angleA + angleB)/2;
 			Sound.beepSequenceUp();
 		}
 
@@ -161,12 +162,22 @@ public class USLocalizer {
 		
 		nav.turnTo(RIGHT_ANGLE*3, true);//allows us to find y
 		pos[1] = -TILE_SIZE+getFilteredData()+SENSOR_CENTER_DIST - Y_OFFSET;
-		pos[2] = odo.getTheta();//setting the angle to its current value
+		pos[2] = odo.getAng();//setting the angle to its current value
 
 		odo.setPosition(pos, new boolean [] {true, true, true});
 		
 		nav.travelTo(0.0,0.0);
 		nav.turnTo(0.0,  false);
+		
+		//LOCALIZATION IS DONE HERE
+		
+		//stop the motors at the end of the localization
+		odo.getLeftMotor().stop(true);
+		odo.getRightMotor().stop(false);
+		
+		isComplete = true;
+		Sound.beep();
+		Delay.msDelay(1000);
 
 		//The robot is now in position to perform object search
 	}
@@ -184,5 +195,20 @@ public class USLocalizer {
 
 		return distance;
 	}
+	
+//	private float getFilteredData() {
+//		usSensor.fetchSample(usData, 0);
+//		float distance = Main.frontUsControl.filteredDistance;;
+//		
+//		//same filter used as in lab 4
+//		if (distance > DISTANCE_THRESHHOLD) 
+//			distance = DISTANCE_THRESHHOLD;
+//
+//		try { Thread.sleep(25); } catch(Exception e){}
+//
+//		return distance;
+//	}
+	
+	
 
 }

@@ -101,6 +101,8 @@ public class Navigator extends BasicNavigator {
 			switch (state) {
 			case INIT:
 //				Sound.buzz();
+				LCD.clear(7);
+				LCD.drawString("INIT", 0, 7);
 				if (isNavigating) {
 					state = State.TURNING;
 				}
@@ -185,7 +187,7 @@ public class Navigator extends BasicNavigator {
 
 	private void turnTo(double angle) {
 		double error;
-		error = angle - this.odometer.getTheta();
+		error = angle - this.odometer.getAng();
 
 		if (error < -180.0) {
 			this.setSpeeds(-Constants.SLOW_SPEED, Constants.SLOW_SPEED);
@@ -207,9 +209,9 @@ public class Navigator extends BasicNavigator {
 	 */
 	public void goForward(double distance, boolean avoid) {
 		double x = odometer.getX()
-				+ Math.sin(Math.toRadians(this.odometer.getTheta())) * distance;
+				+ Math.sin(Math.toRadians(this.odometer.getAng())) * distance;
 		double y = odometer.getY()
-				+ Math.cos(Math.toRadians(this.odometer.getTheta())) * distance;
+				+ Math.cos(Math.toRadians(this.odometer.getAng())) * distance;
 
 		this.travelTo(x, y, avoid);
 

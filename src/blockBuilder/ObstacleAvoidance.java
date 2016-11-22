@@ -83,16 +83,14 @@ public class ObstacleAvoidance extends Thread {
 			Sound.beep();
 			
 			//if the claw has no blocks, use the default raise, lower, and grab operations.
+			//if it does, grab another block and travel ot the green zone
 			if(!Claw.hasBlock){
 				Claw.lower();
 				Claw.grab();
 				Claw.raise();
 				Claw.hasBlock = true;
 				Claw.numberOfBlocks++;
-//				nav.travelTo(Constants.TEMP_GREEN_ZONE[0], Constants.TEMP_GREEN_ZONE[1]);
-//				Claw.lower();
-//				Claw.release();
-//				Claw.raise();
+
 				
 			} else {
 				Claw.lowerWithBlocks();

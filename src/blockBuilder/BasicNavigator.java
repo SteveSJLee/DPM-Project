@@ -84,7 +84,7 @@ public class BasicNavigator extends Thread {
 			LCD.drawString("COUNTER: " + Integer.toString(checkHeadingTimer), 0, 4);
 			if(checkHeadingTimer >= 50){
 				minAng = getDestAngle(x,y);
-				double error = minAng - this.odometer.getTheta();
+				double error = minAng - this.odometer.getAng();
 				if(Math.abs(error) > Constants.ODO_ANGLE_ERROR)
 					this.turnTo(minAng, false);
 				checkHeadingTimer = 0;
@@ -104,11 +104,11 @@ public class BasicNavigator extends Thread {
 	 */
 	public void turnTo(double angle, boolean stop) {
 
-		double error = angle - this.odometer.getTheta();
+		double error = angle - this.odometer.getAng();
 
 		while (Math.abs(error) > Constants.ODO_ANGLE_ERROR) {
 
-			error = angle - this.odometer.getTheta();
+			error = angle - this.odometer.getAng();
 
 			if (error < -180.0) {
 				this.setSpeeds(-Constants.SLOW_SPEED, Constants.SLOW_SPEED);
@@ -139,8 +139,8 @@ public class BasicNavigator extends Thread {
 	 * Go foward a set distance in cm
 	 */
 	public void goForward(double distance) {
-		this.travelTo(Math.cos(Math.toRadians(this.odometer.getTheta())) * distance,
-				Math.cos(Math.toRadians(this.odometer.getTheta())) * distance);
+		this.travelTo(Math.cos(Math.toRadians(this.odometer.getAng())) * distance,
+				Math.cos(Math.toRadians(this.odometer.getAng())) * distance);
 
 	}
 
@@ -196,7 +196,7 @@ public class BasicNavigator extends Thread {
 		}
 
 		// get the difference between the thetas
-		double thetar = odometer.getTheta();
+		double thetar = odometer.getAng();
 
 		double diffTheta = thetad - thetar;
 
@@ -211,7 +211,7 @@ public class BasicNavigator extends Thread {
 	}
 	//is it facing where it wants to go
 	protected boolean facingDest(double angle) {
-		return Math.abs(angle - odometer.getTheta()) < Constants.ODO_ANGLE_ERROR;
+		return Math.abs(angle - odometer.getAng()) < Constants.ODO_ANGLE_ERROR;
 	}
 	//check if it arrived where it wants to be
 	protected boolean checkIfDone(double x, double y) {

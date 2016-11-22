@@ -28,8 +28,14 @@ public class Main {
 	public static final EV3LargeRegulatedMotor liftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
 	// public static final EV3LargeRegulatedMotor frontUsMotor = new
 	// EV3LargeRegulatedMotor(LocalEV3.get().getPort("E"));
-	private static Navigator nav;
-	private static WifiTest2 wifiTest;
+	public static Navigator nav;
+	private static Navigation nav2;
+	private static Odometer odo;
+	private static UltrasonicPoller frontUs;
+	private static float[] frontColorData;
+	private static SensorModes frontColorSensor;
+	public static SideUSController frontUsControl;
+	//	private static WifiTest2 wifiTest;
 
 	/*
 	 * Sensors: - 1 Ultrasonic in the front - 3 Color sensors: 1 on the front,
@@ -54,17 +60,17 @@ public class Main {
 		SampleProvider frontUsValue = frontUsSensor.getMode("Distance");
 		float[] frontUsData = new float[frontUsValue.sampleSize()];
 
-		SensorModes rightUsSensor = new EV3UltrasonicSensor(rightUsPort);
-		SampleProvider rightUsValue = rightUsSensor.getMode("Distance");
-		float[] rightUsData = new float[rightUsValue.sampleSize()];
+//		SensorModes rightUsSensor = new EV3UltrasonicSensor(rightUsPort);
+//		SampleProvider rightUsValue = rightUsSensor.getMode("Distance");
+//		float[] rightUsData = new float[rightUsValue.sampleSize()];
+//
+//		SensorModes leftUsSensor = new EV3UltrasonicSensor(leftUsPort);
+//		SampleProvider leftUsValue = leftUsSensor.getMode("Distance");
+//		float[] leftUsData = new float[leftUsValue.sampleSize()];
 
-		SensorModes leftUsSensor = new EV3UltrasonicSensor(leftUsPort);
-		SampleProvider leftUsValue = leftUsSensor.getMode("Distance");
-		float[] leftUsData = new float[leftUsValue.sampleSize()];
-
-		SensorModes frontColorSensor = new EV3ColorSensor(frontColorPort);
+		frontColorSensor = new EV3ColorSensor(frontColorPort);
 		SampleProvider frontColorValue = frontColorSensor.getMode("ColorID");
-		float[] frontColorData = new float[frontColorValue.sampleSize()];
+		frontColorData = new float[frontColorValue.sampleSize()];
 
 		// Color sensor setup works just like US, but there are 3 of them
 		// colorValue provides samples from this instance
@@ -82,48 +88,49 @@ public class Main {
 		leftMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
 		rightMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
 
-//		SideUSController rightUsControl = new SideUSController(5);
-//		UltrasonicPoller rightUs = new UltrasonicPoller(rightUsValue, rightUsData, rightUsControl);
-//		SideUSController leftUsControl = new SideUSController(4);
-//		UltrasonicPoller leftUs = new UltrasonicPoller(leftUsValue, leftUsData, leftUsControl);
-//
-		SideUSController frontUsControl = new SideUSController(5);
-		UltrasonicPoller frontUs = new UltrasonicPoller(frontUsValue, frontUsData, frontUsControl);
+		//		SideUSController rightUsControl = new SideUSController(5);
+		//		UltrasonicPoller rightUs = new UltrasonicPoller(rightUsValue, rightUsData, rightUsControl);
+		//		SideUSController leftUsControl = new SideUSController(4);
+		//		UltrasonicPoller leftUs = new UltrasonicPoller(leftUsValue, leftUsData, leftUsControl);
+
+
+		frontUsControl = new SideUSController(5);
+		frontUs = new UltrasonicPoller(frontUsValue, frontUsData, frontUsControl);
 
 		// rightUs.start();
 		// leftUs.start();
 		frontUs.start();
 
-		Odometer odo = new Odometer(Constants.ODOMETER_INTERVAL, true);
+		odo = new Odometer(leftMotor, rightMotor, Constants.ODOMETER_INTERVAL, true);
+		//comment out the setPostiion if localization is to be done
+		//odo.setPosition(new double[]{0,0,0}, new boolean[]{true, true, true});
 		odo.start();
 
-		nav = new Navigator(odo, frontUs, frontColorSensor, frontColorData);
-		nav.start();
-		
-		
+		nav2 = new Navigation(odo);	
+
+
+
+
+
+
 
 		// public USLocalizer(Navigator nav, Odometer odo, SampleProvider
 		// usSensor, float[] usData, LocalizationType locType) {
 
-//		 BasicNavigator basicNav = new BasicNavigator(odo);
+		//		 BasicNavigator basicNav = new BasicNavigator(odo);
 		// ahmetlocalizer ahm = new ahmetlocalizer(odo, basicNav, frontUsValue,
 		// frontUsData, ahmetlocalizer.LocalizationType.FALLING_EDGE,
 		// rightMotor, leftMotor );
 		// ahm.doLocalization();
-//		USLocalizer localizer = new USLocalizer(basicNav, odo, frontUsValue, frontUsData,
-//				USLocalizer.LocalizationType.FALLING_EDGE);
-//		localizer.doLocalization();
+		USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
+		localizer.doLocalization();
+//		USLocalizer.isComplete = true;
+		//		leftMotor.stop(true);
+		//		rightMotor.stop(false);
 
-//		leftMotor.stop(true);
-//		rightMotor.stop(false);
-		
-		wifiTest = new WifiTest2();
-		wifiTest.connectToWifi();
-		System.out.println(wifiTest.getLGZx());
-		System.out.println(wifiTest.getLGZy());
-		
-		Button.waitForAnyPress();
-		
+
+		//	Button.waitForAnyPress();
+
 		completeCourse();
 
 		// use threads for both sensors to have them poll continuosly
@@ -132,8 +139,19 @@ public class Main {
 
 	private static void completeCourse() {
 		// set points to go to
-		int[][] waypoints = { {wifiTest.getLGZx(), wifiTest.getLGZy() }, { wifiTest.getUGZx(), wifiTest.getUGZy() }, { 60, 30 }, { 60, 60 }, { 30, 60 }, { 0, 60 }, { 0, 30 },
-				{ 30, 30 }, { 60, 30 }, { 60, 0 }, { 30, 0 }, { 30, 30 }, { 0, 30 }, { 0, 60 }, { 30, 60 } };
+		while(!USLocalizer.isComplete){
+			//wait for localization to complete
+		}
+		
+		
+		
+		LCD.clear(7);
+		LCD.drawString("COMPLETING COURSE", 0, 7);
+		//initialize the second navigator to use for moving around the field after the localization is complete
+		nav = new Navigator(odo, frontUs, frontColorSensor, frontColorData);
+		nav.start();
+		int[][] waypoints = {/*{ 60, 30 }, { 60, 60 }, { 30, 60 }, { 0, 60 },*/ { 0, 30 },
+				{ 30, 30 }, { 60, 30 }, { 60, 0 }, { 30, 0 }, { 0, 0 },/* { 0, 30 }, { 0, 60 }, { 30, 60 } */};
 
 		for (int[] point : waypoints) {
 			nav.travelTo(point[0], point[1], true);
