@@ -196,8 +196,9 @@ public class Localization {
 			
 			
 			angleB = odo.getAng();
-	
+			
 			//setting the north angle
+			double angle;
 			if(angleA<angleB) {
 				angle = 45 - (angleA + angleB)/2.0;
 			}
