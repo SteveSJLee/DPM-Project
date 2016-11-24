@@ -7,6 +7,7 @@ public final class Constants {
 	public static final double TILE_WIDTH = 30.48;
 	
 	//motor speed control
+	public static final int SUPER_SLOW_SPEED = 50;
 	public static final int SLOW_SPEED = 100;
 	public static final int FAST_SPEED = 200;
 	public static final int SUPER_FAST_SPEED = 300;
@@ -16,6 +17,7 @@ public final class Constants {
 	
 	//filter
 	public static final int SAMPLE_SIZE = 20;
+	public static final int CLIPPING_MAX = 50;
 	
 	//odometer
 	public static final int ODOMETER_INTERVAL = 30;
@@ -25,9 +27,9 @@ public final class Constants {
 	public static final double ODO_ANGLE_ERROR = 10.0; //3 in lab 5
 	
 	//obstacle avoidance
-	public static final double AVOID_BAND_CENTER = 0;
-	public static final double AVOID_BANDWIDTH = 0;
-	public static final float BLOCK_DISTANCE = 5;
+	public static final double AVOID_BAND_CENTER = 15;
+	public static final double AVOID_BANDWIDTH = 2;
+	public static final float BLOCK_DISTANCE = 4;
 	public static final int BLOCK_LOWER_COLOR = 6;
 	public static final int BLOCK_UPPER_COLOR = 7;
 	

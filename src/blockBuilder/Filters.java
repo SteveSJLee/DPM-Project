@@ -24,6 +24,13 @@ public final class Filters {
 		else 
 			return ( a.get(a.size() / 2) + a.get(a.size()/2 - 1) ) / 2;
 	}
+
+	public static float clippingFilter(float f){
+		if(f > Constants.CLIPPING_MAX)
+			return Constants.CLIPPING_MAX;
+		else
+			return f;
+	}
 	
 }
 

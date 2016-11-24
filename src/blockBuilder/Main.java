@@ -32,9 +32,13 @@ public class Main {
 	private static Navigation nav2;
 	private static Odometer odo;
 	private static UltrasonicPoller frontUs;
+	private static UltrasonicPoller leftUs;
+	private static UltrasonicPoller rightUs;
 	private static float[] frontColorData;
 	private static SensorModes frontColorSensor;
 	public static SideUSController frontUsControl;
+	public static SideUSController leftUsControl;
+	public static SideUSController rightUsControl;
 	//	private static WifiTest2 wifiTest;
 
 	/*
@@ -60,13 +64,13 @@ public class Main {
 		SampleProvider frontUsValue = frontUsSensor.getMode("Distance");
 		float[] frontUsData = new float[frontUsValue.sampleSize()];
 
-//		SensorModes rightUsSensor = new EV3UltrasonicSensor(rightUsPort);
-//		SampleProvider rightUsValue = rightUsSensor.getMode("Distance");
-//		float[] rightUsData = new float[rightUsValue.sampleSize()];
-//
-//		SensorModes leftUsSensor = new EV3UltrasonicSensor(leftUsPort);
-//		SampleProvider leftUsValue = leftUsSensor.getMode("Distance");
-//		float[] leftUsData = new float[leftUsValue.sampleSize()];
+		SensorModes rightUsSensor = new EV3UltrasonicSensor(rightUsPort);
+		SampleProvider rightUsValue = rightUsSensor.getMode("Distance");
+		float[] rightUsData = new float[rightUsValue.sampleSize()];
+
+		SensorModes leftUsSensor = new EV3UltrasonicSensor(leftUsPort);
+		SampleProvider leftUsValue = leftUsSensor.getMode("Distance");
+		float[] leftUsData = new float[leftUsValue.sampleSize()];
 
 		frontColorSensor = new EV3ColorSensor(frontColorPort);
 		SampleProvider frontColorValue = frontColorSensor.getMode("ColorID");
@@ -88,18 +92,20 @@ public class Main {
 		leftMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
 		rightMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
 
-		//		SideUSController rightUsControl = new SideUSController(5);
-		//		UltrasonicPoller rightUs = new UltrasonicPoller(rightUsValue, rightUsData, rightUsControl);
-		//		SideUSController leftUsControl = new SideUSController(4);
-		//		UltrasonicPoller leftUs = new UltrasonicPoller(leftUsValue, leftUsData, leftUsControl);
+		rightUsControl = new SideUSController(6, "right");
+		rightUs = new UltrasonicPoller(rightUsValue, rightUsData, rightUsControl);
+		leftUsControl = new SideUSController(5, "left");
+		leftUs = new UltrasonicPoller(leftUsValue, leftUsData, leftUsControl);
 
 
-		frontUsControl = new SideUSController(5);
+		frontUsControl = new SideUSController(4, "front");
 		frontUs = new UltrasonicPoller(frontUsValue, frontUsData, frontUsControl);
 
 		// rightUs.start();
 		// leftUs.start();
 		frontUs.start();
+		leftUs.start();
+		rightUs.start();
 
 		odo = new Odometer(leftMotor, rightMotor, Constants.ODOMETER_INTERVAL, true);
 		//comment out the setPostiion if localization is to be done
@@ -121,10 +127,12 @@ public class Main {
 		// ahmetlocalizer ahm = new ahmetlocalizer(odo, basicNav, frontUsValue,
 		// frontUsData, ahmetlocalizer.LocalizationType.FALLING_EDGE,
 		// rightMotor, leftMotor );
-		// ahm.doLocalization();
-		USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
-		localizer.doLocalization();
-//		USLocalizer.isComplete = true;
+		// ahm.doLocalization();]
+		
+		//USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
+		//localizer.doLocalization();
+		
+		USLocalizer.isComplete = true;
 		//		leftMotor.stop(true);
 		//		rightMotor.stop(false);
 

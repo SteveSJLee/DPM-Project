@@ -5,6 +5,7 @@
 
 package blockBuilder;
 
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.sensor.SensorModes;
 
@@ -136,7 +137,7 @@ public class Navigator extends BasicNavigator {
 //				Sound.buzz();
 				if (checkEmergency()) { // order matters!
 					state = State.EMERGENCY;
-					avoidance = new ObstacleAvoidance(this, colorSensor, colorData, destx, desty);
+					avoidance = new ObstacleAvoidance(this, colorSensor, colorData, destx, desty, Main.frontUsControl, Main.leftUsControl, Main.rightUsControl);
 					avoidance.start();
 				} else if (!checkIfDone(destx, desty)) {
 					updateTravel();
@@ -161,12 +162,16 @@ public class Navigator extends BasicNavigator {
 			case EMERGENCY:
 				LCD.clear(7);
 				LCD.drawString("EMERGENCY", 0, 7);
+				while(!avoidance.safe){
+					//do nothing and let the avoidance class do its thing
+				}
 				if (avoidance.obstructionAtPoint()){
 					stopMotors();
 					isNavigating = false;
 					state = State.INIT;
 				}
 				else if (avoidance.resolved()) {
+					Sound.playTone(4000, 500);
 					state = State.TURNING;
 				} 
 				break; 
@@ -181,7 +186,7 @@ public class Navigator extends BasicNavigator {
 	}
 
 	private boolean checkEmergency() {
-		return usSensor.getDistance() < 23;
+		return usSensor.getDistance() < Constants.AVOID_BAND_CENTER;
 	}
 
 
