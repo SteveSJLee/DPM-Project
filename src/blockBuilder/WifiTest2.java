@@ -80,63 +80,63 @@ public class WifiTest2 {
 	public int getCSC(){
 		if (dataRecieved)
 			return CSC;
-		else return 0;
+		else return -1;
 	}
 
 	public int getBSC(){
 		if (dataRecieved)
 			return BSC;
-		else return 0;
+		else return -1;
 	}
 	
 	public int getLRZy(){
 		if (dataRecieved)
 			return LRZy;
-		else return 0;
+		else return -1;
 	}
 	public int getUGZy(){
 		if (dataRecieved)
 			return UGZy;
-		else return 0;
+		else return -1;
 	}
 	public int getLRZx(){
 		if (dataRecieved)
 			return LRZx;
-		else return 0;
+		else return -1;
 	}
 	public int getUGZx(){
 		if (dataRecieved)
 			return UGZx;
-		else return 0;
+		else return -1;
 	}
 	public int getLGZy(){
 		if (dataRecieved)
 			return LGZy;
-		else return 0;
+		else return -1;
 	}
 	public int getLGZx(){
 		if (dataRecieved)
 			return LGZx;
-		else return 0;
+		else return -1;
 	}
 	public int getURZy(){
 		if (dataRecieved)
 			return URZy;
-		else return 0;
+		else return -1;
 	}
 	public int getCTN(){
 		if (dataRecieved)
 			return CTN;
-		else return 0;
+		else return -1;
 	}
 	public int getURZx(){
 		if (dataRecieved)
 			return URZx;
-		else return 0;
+		else return -1;
 	}
 	public int getBTN(){
 		if (dataRecieved)
 			return BTN;
-		else return 0;
+		else return -1;
 	}
 }
