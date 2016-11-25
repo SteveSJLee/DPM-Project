@@ -32,6 +32,17 @@ public final class Filters {
 			return f;
 	}
 	
+	/**
+	 * @param coordinates original 2 coordinate
+	 * @return finds the center of 2 coordinates given as int arrays
+	 */
+	public static int[] findCenterCoordinate(int[][] coordinates){
+		if(coordinates.length != 2 || coordinates[0].length != 2 || coordinates[1].length !=2)
+			return null;
+		else
+			return new int[]{(coordinates[0][0]+coordinates[1][0])/2, (coordinates[1][0]+coordinates[1][1])/2};
+	}
+	
 }
 
 
