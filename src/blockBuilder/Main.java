@@ -32,10 +32,14 @@ public class Main {
 	private static Navigation nav2;
 	private static Odometer odo;
 	private static UltrasonicPoller frontUs;
+	private static UltrasonicPoller leftUs;
+	private static UltrasonicPoller rightUs;
 	private static float[] frontColorData;
 	private static SensorModes frontColorSensor;
 	public static SideUSController frontUsControl;
-	//	private static WifiTest2 wifiTest;
+	public static SideUSController leftUsControl;
+	public static SideUSController rightUsControl;
+	private static WifiTest2 wifiTest;
 
 	/*
 	 * Sensors: - 1 Ultrasonic in the front - 3 Color sensors: 1 on the front,
@@ -60,13 +64,13 @@ public class Main {
 		SampleProvider frontUsValue = frontUsSensor.getMode("Distance");
 		float[] frontUsData = new float[frontUsValue.sampleSize()];
 
-//		SensorModes rightUsSensor = new EV3UltrasonicSensor(rightUsPort);
-//		SampleProvider rightUsValue = rightUsSensor.getMode("Distance");
-//		float[] rightUsData = new float[rightUsValue.sampleSize()];
-//
-//		SensorModes leftUsSensor = new EV3UltrasonicSensor(leftUsPort);
-//		SampleProvider leftUsValue = leftUsSensor.getMode("Distance");
-//		float[] leftUsData = new float[leftUsValue.sampleSize()];
+		SensorModes rightUsSensor = new EV3UltrasonicSensor(rightUsPort);
+		SampleProvider rightUsValue = rightUsSensor.getMode("Distance");
+		float[] rightUsData = new float[rightUsValue.sampleSize()];
+
+		SensorModes leftUsSensor = new EV3UltrasonicSensor(leftUsPort);
+		SampleProvider leftUsValue = leftUsSensor.getMode("Distance");
+		float[] leftUsData = new float[leftUsValue.sampleSize()];
 
 		frontColorSensor = new EV3ColorSensor(frontColorPort);
 		SampleProvider frontColorValue = frontColorSensor.getMode("ColorID");
@@ -88,18 +92,20 @@ public class Main {
 		leftMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
 		rightMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
 
-		//		SideUSController rightUsControl = new SideUSController(5);
-		//		UltrasonicPoller rightUs = new UltrasonicPoller(rightUsValue, rightUsData, rightUsControl);
-		//		SideUSController leftUsControl = new SideUSController(4);
-		//		UltrasonicPoller leftUs = new UltrasonicPoller(leftUsValue, leftUsData, leftUsControl);
+		rightUsControl = new SideUSController(6, "right");
+		rightUs = new UltrasonicPoller(rightUsValue, rightUsData, rightUsControl);
+		leftUsControl = new SideUSController(5, "left");
+		leftUs = new UltrasonicPoller(leftUsValue, leftUsData, leftUsControl);
 
 
-		frontUsControl = new SideUSController(5);
+		frontUsControl = new SideUSController(4, "front");
 		frontUs = new UltrasonicPoller(frontUsValue, frontUsData, frontUsControl);
 
 		// rightUs.start();
 		// leftUs.start();
 		frontUs.start();
+		leftUs.start();
+		rightUs.start();
 
 		odo = new Odometer(leftMotor, rightMotor, Constants.ODOMETER_INTERVAL, true);
 		//comment out the setPostiion if localization is to be done
@@ -121,10 +127,12 @@ public class Main {
 		// ahmetlocalizer ahm = new ahmetlocalizer(odo, basicNav, frontUsValue,
 		// frontUsData, ahmetlocalizer.LocalizationType.FALLING_EDGE,
 		// rightMotor, leftMotor );
-		// ahm.doLocalization();
-		USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
-		localizer.doLocalization();
-//		USLocalizer.isComplete = true;
+		// ahm.doLocalization();]
+		
+		//USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
+		//localizer.doLocalization();
+		wifiTest = new WifiTest2();
+		USLocalizer.isComplete = true;
 		//		leftMotor.stop(true);
 		//		rightMotor.stop(false);
 
@@ -142,6 +150,63 @@ public class Main {
 		while(!USLocalizer.isComplete){
 			//wait for localization to complete
 		}
+		
+		if (wifiTest.getBSC()!=-1){
+//			boolean blockBuilder = true;
+			int [][] greenZoneWayPoints = new int[2][2];
+			if (wifiTest.getBSC()==1){
+				greenZoneWayPoints[0][0] = wifiTest.getLGZx();
+				greenZoneWayPoints[0][1] = wifiTest.getLGZy();
+				greenZoneWayPoints[1][0] = wifiTest.getUGZx();
+				greenZoneWayPoints[1][1] = wifiTest.getUGZy();
+			} else if (wifiTest.getBSC()==2){
+				//switch x and y axis
+				//subtract 10 from y axis 
+				greenZoneWayPoints[0][0] = wifiTest.getLGZy(); 
+				greenZoneWayPoints[0][1] = 10 - wifiTest.getLGZx();
+				greenZoneWayPoints[1][0] = wifiTest.getUGZy();
+				greenZoneWayPoints[1][1] = 10 - wifiTest.getUGZx();
+			} else if (wifiTest.getBSC()==3){
+				greenZoneWayPoints[0][0] = 10 - wifiTest.getUGZx();
+				greenZoneWayPoints[0][1] = 10 - wifiTest.getUGZy();
+				greenZoneWayPoints[1][0] = 10 - wifiTest.getLGZx();
+				greenZoneWayPoints[1][1] = 10 - wifiTest.getLGZy();
+			} else if (wifiTest.getBSC()==4){
+				greenZoneWayPoints[0][0] = 10 - wifiTest.getUGZy();
+				greenZoneWayPoints[0][1] = wifiTest.getLGZx();
+				greenZoneWayPoints[1][0] = 10 - wifiTest.getLGZy();
+				greenZoneWayPoints[1][1] = wifiTest.getUGZx();
+			}
+			
+		} else if (wifiTest.getCSC()!=-1){
+//			boolean garbageCollector = true;
+			int [][] redZoneWayPoints = new int[2][2];
+			if (wifiTest.getCSC()==1){
+				redZoneWayPoints[0][0] = wifiTest.getLRZx();
+				redZoneWayPoints[0][1] = wifiTest.getLRZy();
+				redZoneWayPoints[1][0] = wifiTest.getURZx();
+				redZoneWayPoints[1][1] = wifiTest.getURZy();
+			} else if (wifiTest.getCSC()==2){
+				//switch x and y axis
+				//subtract 10 from y axis 
+				redZoneWayPoints[0][0] = wifiTest.getLRZy(); 
+				redZoneWayPoints[0][1] = 10 - wifiTest.getLRZx();
+				redZoneWayPoints[1][0] = wifiTest.getURZy();
+				redZoneWayPoints[1][1] = 10 - wifiTest.getURZx();
+			} else if (wifiTest.getCSC()==3){
+				redZoneWayPoints[0][0] = 10 - wifiTest.getURZx();
+				redZoneWayPoints[0][1] = 10 - wifiTest.getURZy();
+				redZoneWayPoints[1][0] = 10 - wifiTest.getLRZx();
+				redZoneWayPoints[1][1] = 10 - wifiTest.getLRZy();
+			} else if (wifiTest.getCSC()==4){
+				redZoneWayPoints[0][0] = 10 - wifiTest.getURZy();
+				redZoneWayPoints[0][1] = wifiTest.getLRZx();
+				redZoneWayPoints[1][0] = 10 - wifiTest.getLRZy();
+				redZoneWayPoints[1][1] = wifiTest.getURZx();
+			}
+		}
+		
+		
 		
 		
 		

@@ -1,6 +1,7 @@
 package blockBuilder;
 /*
 * @author Sean Lawlor
+
 * @date November 3, 2011
 * @class ECSE 211 - Design Principle and Methods
 * 
@@ -19,11 +20,9 @@ package blockBuilder;
 * 
 */
 
-
+import wifi.WifiConnection;
 import java.io.IOException;
 import java.util.HashMap;
-
-import wifi.WifiConnection;
 import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
@@ -80,63 +79,63 @@ public class WifiTest2 {
 	public int getCSC(){
 		if (dataRecieved)
 			return CSC;
-		else return 0;
+		else return -1;
 	}
 
 	public int getBSC(){
 		if (dataRecieved)
 			return BSC;
-		else return 0;
+		else return -1;
 	}
 	
 	public int getLRZy(){
 		if (dataRecieved)
 			return LRZy;
-		else return 0;
+		else return -1;
 	}
 	public int getUGZy(){
 		if (dataRecieved)
 			return UGZy;
-		else return 0;
+		else return -1;
 	}
 	public int getLRZx(){
 		if (dataRecieved)
 			return LRZx;
-		else return 0;
+		else return -1;
 	}
 	public int getUGZx(){
 		if (dataRecieved)
 			return UGZx;
-		else return 0;
+		else return -1;
 	}
 	public int getLGZy(){
 		if (dataRecieved)
 			return LGZy;
-		else return 0;
+		else return -1;
 	}
 	public int getLGZx(){
 		if (dataRecieved)
 			return LGZx;
-		else return 0;
+		else return -1;
 	}
 	public int getURZy(){
 		if (dataRecieved)
 			return URZy;
-		else return 0;
+		else return -1;
 	}
 	public int getCTN(){
 		if (dataRecieved)
 			return CTN;
-		else return 0;
+		else return -1;
 	}
 	public int getURZx(){
 		if (dataRecieved)
 			return URZx;
-		else return 0;
+		else return -1;
 	}
 	public int getBTN(){
 		if (dataRecieved)
 			return BTN;
-		else return 0;
+		else return -1;
 	}
 }

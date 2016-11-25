@@ -20,18 +20,20 @@ public class SideUSController extends Thread implements UltrasonicController {
 	
 	
 	private int lcdLine;
+	private String name;
 	
 	
 	
 	/**
 	 * @param lcdLine the lcd line on which to print the processed distance
 	 */
-	public SideUSController(int lcdLine){
+	public SideUSController(int lcdLine, String name){
 		this.lcdLine = lcdLine;
+		this.name = name;
 	}
 	
 	private ArrayList<Integer> dataList;
-	public static float filteredDistance=0;
+	public float filteredDistance=0;
 	
 	public void run(){
 		this.dataList = new ArrayList<Integer>();
@@ -54,7 +56,7 @@ public class SideUSController extends Thread implements UltrasonicController {
 		if(dataList.size() == Constants.SAMPLE_SIZE){
 			filteredDistance = Filters.medianFilter(dataList);
 			LCD.clear(lcdLine);
-			LCD.drawString(Double.toString(filteredDistance), 0, lcdLine);
+			LCD.drawString(name + ": " + Double.toString(filteredDistance), 0, lcdLine);
 			dataList = new ArrayList<Integer>();
 		} 
 		

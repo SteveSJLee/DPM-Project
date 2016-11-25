@@ -2,12 +2,14 @@ package blockBuilder;
 
 //odometry correction assuming that the center of rotation of the robot is the point right between the wheels
 public class OdometryCorrection extends Thread {
+	
 	private double detectionLeftTacho, detectionRightTacho;
 	public static boolean leftLineDetected, rightLineDetected;
 	private Odometer odometer;
 	public OdometryCorrection(Odometer odometer){
 		this.odometer = odometer;
 	}
+	
 	public void run(){
 		while(true){
 			//get the tacho counts of the motors at the instance that the side sensors detect a black line
