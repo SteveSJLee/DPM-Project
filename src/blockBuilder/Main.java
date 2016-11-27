@@ -10,7 +10,12 @@ import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.*;
 import lejos.robotics.SampleProvider;
+
+import java.util.List;
+import java.util.Arrays;
+
 import blockBuilder.USLocalizer;
+import org.apache.commons.lang3.time.StopWatch;
 
 /* Team 13's final DPM project.
  * Software Developpers: Patrick, Ilyas, Ahmet
@@ -40,6 +45,10 @@ public class Main {
 	public static SideUSController leftUsControl;
 	public static SideUSController rightUsControl;
 	private static WifiTest2 wifiTest;
+	public static long time = 0;
+	public static List<int[]> waypoints = Arrays.asList(new int[][]{/*{ 60, 30 }, { 60, 60 }, { 30, 60 }, { 0, 60 },*/ { 0, 30 },
+			{ 30, 30 }, { 60, 30 }, { 60, 0 }, { 30, 0 }, { 0, 0 },/* { 0, 30 }, { 0, 60 }, { 30, 60 } */});
+	
 
 	/*
 	 * Sensors: - 1 Ultrasonic in the front - 3 Color sensors: 1 on the front,
@@ -76,18 +85,7 @@ public class Main {
 		SampleProvider frontColorValue = frontColorSensor.getMode("ColorID");
 		frontColorData = new float[frontColorValue.sampleSize()];
 
-		// Color sensor setup works just like US, but there are 3 of them
-		// colorValue provides samples from this instance
-		// colorData is the buffer in which data are returned
-
-		// SensorModes leftColorSensor = new EV3ColorSensor(leftColorPort);
-		// SensorModes rightColorSensor = new EV3ColorSensor(rightColorPort);
-
-		// SampleProvider leftColorvalue = leftColorSensor.getMode("RGB");
-		// SampleProvider rightColorvalue = rightColorSensor.getMode("RGB");
-
-		// float[] leftColorData = new float[leftColorvalue.sampleSize()];
-		// float[] rightColorData = new float[rightColorvalue.sampleSize()];
+		
 
 		leftMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
 		rightMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
@@ -117,31 +115,31 @@ public class Main {
 
 
 
-
-
-
-		// public USLocalizer(Navigator nav, Odometer odo, SampleProvider
-		// usSensor, float[] usData, LocalizationType locType) {
-
-		//		 BasicNavigator basicNav = new BasicNavigator(odo);
-		// ahmetlocalizer ahm = new ahmetlocalizer(odo, basicNav, frontUsValue,
-		// frontUsData, ahmetlocalizer.LocalizationType.FALLING_EDGE,
-		// rightMotor, leftMotor );
-		// ahm.doLocalization();]
 		
-		//USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
-		//localizer.doLocalization();
+		
+		(new Thread(){
+			public void run(){
+				StopWatch timer = new StopWatch();
+				timer.start();
+				//LCD.clear(3);
+				while(true){
+					//time is in ms
+					time = timer.getTime();
+					int minutes = (int)time / 60000;
+					int seconds = (int)time / 1000 - minutes * 60000;
+					//int ms = (int)time - seconds * 1000 - minutes * 60000;
+					LCD.drawString("TIME: " + Integer.toString(minutes) + ":" + Integer.toString(seconds) , 0, 3);
+				}
+			}
+		}).start();
+
+		
+//		USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
+//		localizer.doLocalization();
 		wifiTest = new WifiTest2();
 		USLocalizer.isComplete = true;
-		//		leftMotor.stop(true);
-		//		rightMotor.stop(false);
-
-
-		//	Button.waitForAnyPress();
-
 		completeCourse();
 
-		// use threads for both sensors to have them poll continuosly
 
 	}
 
@@ -215,10 +213,11 @@ public class Main {
 		//initialize the second navigator to use for moving around the field after the localization is complete
 		nav = new Navigator(odo, frontUs, frontColorSensor, frontColorData);
 		nav.start();
-		int[][] waypoints = {/*{ 60, 30 }, { 60, 60 }, { 30, 60 }, { 0, 60 },*/ { 0, 30 },
-				{ 30, 30 }, { 60, 30 }, { 60, 0 }, { 30, 0 }, { 0, 0 },/* { 0, 30 }, { 0, 60 }, { 30, 60 } */};
+		
 
 		for (int[] point : waypoints) {
+			nav.wpX = point[0];
+			nav.wpY = point[1];
 			nav.travelTo(point[0], point[1], true);
 			while (nav.isTravelling()) {
 				try {
@@ -262,7 +261,6 @@ public class Main {
 			clawMotor.rotate(-claw);
 			liftMotor.rotate(angle, false);
 			liftMotor.flt();
-
 			// Sound.beepSequence();
 
 		}

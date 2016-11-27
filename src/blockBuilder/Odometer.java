@@ -105,9 +105,9 @@ public class Odometer implements TimerListener {
 		}
 		
 		
-		LCD.drawString("X: " + Double.toString(x), 0, 0);
-		LCD.drawString("Y: " + Double.toString(y), 0, 1);
-		LCD.drawString("T: " + Double.toString(theta), 0, 2);
+		LCD.drawString("X: " + Double.toString(Filters.round(x, 3)), 0, 0);
+		LCD.drawString("Y: " + Double.toString(Filters.round(y, 3)), 0, 1);
+		LCD.drawString("T: " + Double.toString(Filters.round(theta, 3)), 0, 2);
 
 		
 		oldDH[0] += dDH[0];

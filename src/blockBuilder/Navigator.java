@@ -12,6 +12,7 @@ import lejos.hardware.sensor.SensorModes;
 
 
 
+
 /**
  * @author returnoftheturk
  *The Navigator class extends the functionality of the Navigation class.
@@ -40,7 +41,8 @@ public class Navigator extends BasicNavigator {
 	private float[] colorData;
 
 	private double destx, desty;
-
+	//the waypoints inputted from main:
+	public int wpX, wpY = 0;
 	final static int SLEEP_TIME = 100;
 
 	UltrasonicPoller usSensor;
@@ -127,6 +129,7 @@ public class Navigator extends BasicNavigator {
 				double destAngle = getDestAngle(destx, desty);
 				turnTo(destAngle);
 				if(facingDest(destAngle)){
+					
 					stopMotors();
 					state = State.TRAVELLING;
 				}
@@ -186,7 +189,7 @@ public class Navigator extends BasicNavigator {
 	}
 
 	private boolean checkEmergency() {
-		return usSensor.getDistance() < Constants.AVOID_BAND_CENTER;
+		return usSensor.getDistance() < Constants.BLOCK_DETECT_DISTANCE;
 	}
 
 
@@ -221,6 +224,8 @@ public class Navigator extends BasicNavigator {
 		this.travelTo(x, y, avoid);
 
 	}
+	
+	
 
 	/**
 	 * @return whether or not the robot is in the process of travelling to a point

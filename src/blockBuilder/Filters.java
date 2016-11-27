@@ -1,5 +1,7 @@
 package blockBuilder;
 import java.util.Arrays;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -41,6 +43,20 @@ public final class Filters {
 			return null;
 		else
 			return new int[]{(coordinates[0][0]+coordinates[1][0])/2, (coordinates[1][0]+coordinates[1][1])/2};
+	}
+	
+	/**
+	 * Rounds a number to the specified values of decimal places
+	 * @param value any number
+	 * @param places the number of decimal places to round to
+	 * @return the rounded number
+	 */
+	public static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
 	}
 	
 }

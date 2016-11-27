@@ -1,6 +1,7 @@
 package blockBuilder;
 /*
 * @author Sean Lawlor
+
 * @date November 3, 2011
 * @class ECSE 211 - Design Principle and Methods
 * 
@@ -19,11 +20,9 @@ package blockBuilder;
 * 
 */
 
-
+import wifi.WifiConnection;
 import java.io.IOException;
 import java.util.HashMap;
-
-import wifi.WifiConnection;
 import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;

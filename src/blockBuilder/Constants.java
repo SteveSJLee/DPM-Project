@@ -27,11 +27,13 @@ public final class Constants {
 	public static final double ODO_ANGLE_ERROR = 10.0; //3 in lab 5
 	
 	//obstacle avoidance
+	public static final double BLOCK_DETECT_DISTANCE = 20;
 	public static final double AVOID_BAND_CENTER = 15;
 	public static final double AVOID_BANDWIDTH = 2;
 	public static final float BLOCK_DISTANCE = 4;
 	public static final int BLOCK_LOWER_COLOR = 6;
 	public static final int BLOCK_UPPER_COLOR = 7;
+	public static final double POINT_REMOVAL_THRESHOLD = 5;
 	
 	//localization
 	public static final double US_DISTANCE_CUTOFF = 100;
