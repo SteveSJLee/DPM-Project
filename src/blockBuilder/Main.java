@@ -134,10 +134,10 @@ public class Main {
 		}).start();
 
 		
-//		USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
-//		localizer.doLocalization();
+		USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
+		localizer.doLocalization();
 		wifiTest = new WifiTest2();
-		USLocalizer.isComplete = true;
+		//USLocalizer.isComplete = true;
 		completeCourse();
 
 

@@ -77,11 +77,11 @@ public class BasicNavigator extends Thread {
 	public void travelTo(double x, double y) {
 		double minAng;
 		int checkHeadingTimer = 0;
-		LCD.clear(4);
+		//LCD.clear(4);
 		while (!checkIfDone(x,y)) {
 			checkHeadingTimer++;
 			
-			LCD.drawString("COUNTER: " + Integer.toString(checkHeadingTimer), 0, 4);
+			//LCD.drawString("COUNTER: " + Integer.toString(checkHeadingTimer), 0, 4);
 			if(checkHeadingTimer >= 50){
 				minAng = getDestAngle(x,y);
 				double error = minAng - this.odometer.getAng();
