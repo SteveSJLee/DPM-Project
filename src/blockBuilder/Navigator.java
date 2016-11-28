@@ -101,6 +101,7 @@ public class Navigator extends BasicNavigator {
 		ObstacleAvoidance avoidance = null;
 		state = State.INIT;
 		while (true) {
+			
 			switch (state) {
 			case INIT:
 //				Sound.buzz();

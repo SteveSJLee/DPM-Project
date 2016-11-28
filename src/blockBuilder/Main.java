@@ -3,7 +3,7 @@ package blockBuilder;
 import blockBuilder.USLocalizer.LocalizationType;
 import lejos.hardware.*;
 import lejos.hardware.ev3.LocalEV3;
-import lejos.hardware.lcd.LCD;
+import lejos.hardware.lcd.LCD;	
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
@@ -45,6 +45,10 @@ public class Main {
 	public static SideUSController leftUsControl;
 	public static SideUSController rightUsControl;
 	private static WifiTest2 wifiTest;
+	public static int [] greenZoneCenter;
+	public static int [] redZoneCenter;
+	public static boolean blockBuilder = false;
+	public static boolean garbageCollector = false;;
 	public static long time = 0;
 	public static List<int[]> waypoints = Arrays.asList(new int[][]{/*{ 60, 30 }, { 60, 60 }, { 30, 60 }, { 0, 60 },*/ { 0, 30 },
 			{ 30, 30 }, { 60, 30 }, { 60, 0 }, { 30, 0 }, { 0, 0 },/* { 0, 30 }, { 0, 60 }, { 30, 60 } */});
@@ -134,10 +138,11 @@ public class Main {
 		}).start();
 
 		
-		USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
-		localizer.doLocalization();
+//		USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
+//		localizer.doLocalization();
 		wifiTest = new WifiTest2();
-		//USLocalizer.isComplete = true;
+		wifiTest.connectToWifi();
+		USLocalizer.isComplete = true;
 		completeCourse();
 
 
@@ -148,10 +153,11 @@ public class Main {
 		while(!USLocalizer.isComplete){
 			//wait for localization to complete
 		}
-		
+		nav = new Navigator(odo, frontUs, frontColorSensor, frontColorData);
+		nav.start();
 		if (wifiTest.getBSC()!=-1){
-//			boolean blockBuilder = true;
-			int [][] greenZoneWayPoints = new int[2][2];
+			blockBuilder = true;
+			int[][] greenZoneWayPoints = new int[2][2];
 			if (wifiTest.getBSC()==1){
 				greenZoneWayPoints[0][0] = wifiTest.getLGZx();
 				greenZoneWayPoints[0][1] = wifiTest.getLGZy();
@@ -175,10 +181,14 @@ public class Main {
 				greenZoneWayPoints[1][0] = 10 - wifiTest.getLGZy();
 				greenZoneWayPoints[1][1] = wifiTest.getUGZx();
 			}
+			Filters.convertToTileWidth(greenZoneWayPoints);
+			greenZoneCenter = Filters.findCenterCoordinate(greenZoneWayPoints);
+			
+			nav.travelTo(greenZoneCenter[0], greenZoneCenter[1], true);
 			
 		} else if (wifiTest.getCSC()!=-1){
-//			boolean garbageCollector = true;
-			int [][] redZoneWayPoints = new int[2][2];
+			garbageCollector = true;
+			int[][] redZoneWayPoints = new int[2][2];
 			if (wifiTest.getCSC()==1){
 				redZoneWayPoints[0][0] = wifiTest.getLRZx();
 				redZoneWayPoints[0][1] = wifiTest.getLRZy();
@@ -202,6 +212,9 @@ public class Main {
 				redZoneWayPoints[1][0] = 10 - wifiTest.getLRZy();
 				redZoneWayPoints[1][1] = wifiTest.getURZx();
 			}
+			Filters.convertToTileWidth(redZoneWayPoints);
+			redZoneCenter = Filters.findCenterCoordinate(redZoneWayPoints);
+			
 		}
 		
 		
@@ -211,14 +224,17 @@ public class Main {
 		LCD.clear(7);
 		LCD.drawString("COMPLETING COURSE", 0, 7);
 		//initialize the second navigator to use for moving around the field after the localization is complete
-		nav = new Navigator(odo, frontUs, frontColorSensor, frontColorData);
-		nav.start();
+		
 		
 
 		for (int[] point : waypoints) {
 			nav.wpX = point[0];
 			nav.wpY = point[1];
-			nav.travelTo(point[0], point[1], true);
+			//4.5 minutes = 270,000 ms, if there are only 30 seconds left, go back to (0,0)
+			if(time > 270000)
+				nav.travelTo(0, 0, true);
+			else 
+				nav.travelTo(point[0], point[1], true);
 			while (nav.isTravelling()) {
 				try {
 					Thread.sleep(500);
@@ -229,55 +245,6 @@ public class Main {
 		}
 	}
 
-	public static void test() {
-		int buttonChoice;
-
-		final TextLCD t = LocalEV3.get().getTextLCD();
-
-		do {
-			// clear the display
-			t.clear();
-
-			// ask the user whether the motors should drive in a square or float
-			t.drawString("< Left | Right >", 0, 0);
-			t.drawString("       |        ", 0, 1);
-			t.drawString("  Move | Drive  ", 0, 2);
-			t.drawString("  Arm  | Stra   ", 0, 3);
-			t.drawString("       | ight   ", 0, 4);
-
-			buttonChoice = Button.waitForAnyPress();
-		} while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT && buttonChoice != Button.ID_DOWN);
-
-		if (buttonChoice == Button.ID_LEFT) { // start all the threads
-
-			int angle = 360 * 6;
-			int claw = 370;
-			liftMotor.setSpeed(400);
-			// each rotation => 1.5cm
-			liftMotor.rotate(-angle, false);
-			clawMotor.rotate(claw);
-			liftMotor.rotate(angle, false);
-			liftMotor.rotate(-angle, false);
-			clawMotor.rotate(-claw);
-			liftMotor.rotate(angle, false);
-			liftMotor.flt();
-			// Sound.beepSequence();
-
-		}
-
-		else {
-
-			// nav.travelTo(0,60);
-			// nav.travelTo(60, 60);
-			// nav.travelTo(60, 0);
-			// nav.travelTo(0, 0);
-			// nav.turnBy(90);
-			clawMotor.rotate(-30);
-		}
-
-		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
-			;
-		System.exit(0);
-	}
+	
 
 }

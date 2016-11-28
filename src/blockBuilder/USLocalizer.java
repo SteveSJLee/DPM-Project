@@ -138,15 +138,15 @@ public class USLocalizer {
 		pos[0] = 0;//arbitrary value
 		pos[1] = 0;//arbitrary value
 
-		// Depending if angleA is smaller or bigger than angleB, we have a different correction
+		// Depending i§ angleA is smaller or bigger than angleB, we have a different correction
 		if (angleA < angleB) {
 			pos[2] = odo.getAng() + DIAGONAL_SMALLER_ANGLE - (angleA + angleB)/2;
-			Sound.beepSequence();
+			//Sound.beepSequence();
 		}
 
 		else {
 			pos[2] = odo.getAng() + DIAGONAL_LARGER_ANGLE - (angleA + angleB)/2;
-			Sound.beepSequenceUp();
+			//Sound.beepSequenceUp();
 		}
 
 		// Set the position and stops the motor 
@@ -176,7 +176,8 @@ public class USLocalizer {
 		odo.getRightMotor().stop(false);
 		
 		isComplete = true;
-		Sound.beep();
+		//localization is only supposde to make a sound when it's complete
+		Sound.playTone(4000, 500);
 		Delay.msDelay(1000);
 
 		//The robot is now in position to perform object search

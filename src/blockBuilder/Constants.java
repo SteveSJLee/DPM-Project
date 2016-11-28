@@ -51,8 +51,8 @@ public final class Constants {
 	public static final int[] TEMP_GREEN_ZONE = {0, 120};
 	
 	//wifi
-	public static final String SERVER_IP = "192.168.2.6";
-	public static final int TEAM_NUMBER = 1;
+	public static final String SERVER_IP = "192.168.2.21";
+	public static final int TEAM_NUMBER = 13;
 	public static final String CSC = "CSC";
 	public static final String BSC = "BSC";
 	public static final String LRZy = "LRZy";

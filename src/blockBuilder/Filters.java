@@ -59,6 +59,19 @@ public final class Filters {
 	    return bd.doubleValue();
 	}
 	
+	/**
+	 * @param waypoints a 2d array of coordinates
+	 * converts coordinates received from wifi into coordinates on the field with respect to tile width
+	 */
+	public static void convertToTileWidth(int[][] waypoints){
+		for(int i=0; i< waypoints.length; i++){
+			for(int j=0; j<waypoints[i].length;j++){
+				waypoints[i][j] = (int)Constants.TILE_WIDTH*waypoints[i][j];
+			}
+		}
+		
+	}
+	
 }
 
 
