@@ -139,18 +139,23 @@ public class ObstacleAvoidance extends Thread {
 			Claw.lower();
 			Claw.release();
 			Claw.raise();
-
+			
 			nav.setSpeeds(-30, -30);
-			while(frontUsSensor.filteredDistance < Constants.BLOCK_DISTANCE + 2){
+			while(frontUsSensor.filteredDistance < Constants.BLOCK_DISTANCE + 10){
 				//do nothing, keep moving
 				LCD.clear(7);
 				LCD.drawString("BACKING UP", 0, 7);
 
 			}
 			nav.stopMotors();
-
 			Claw.numberOfBlocks = 0;
 			Claw.hasBlock = false;
+			nav.travelTo(0, 0);
+			while(true){
+				//stop
+			}
+			
+			
 
 
 		}

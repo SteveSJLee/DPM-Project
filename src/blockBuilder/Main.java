@@ -147,11 +147,11 @@ public class Main {
 
 
 
+		
+		
+		
 		getWifiData();
 		
-		while(!hasWiFiData){
-
-		}
 		//odo.setPosition(new double[]{0,0,0}, new boolean[]{true,true,true});
 		//USLocalizer.isComplete = true;
 
@@ -200,7 +200,7 @@ public class Main {
 			//nav.turnBy(360);
 			//Delay.msDelay(1000);
 			//nav.travelTo(greenZoneCenter[0], greenZoneCenter[1], true);
-
+			hasWiFiData = true;
 		} else if (wifiTest.getCSC()!=-1){
 			garbageCollector = true;
 			int[][] redZoneWayPoints = new int[2][2];
@@ -230,9 +230,9 @@ public class Main {
 			Filters.convertToTileWidth(redZoneWayPoints);
 			redZoneCenter = Filters.findCenterCoordinate(redZoneWayPoints);
 			robotTarget = redZoneCenter;
-
+			hasWiFiData = true;
 		}
-		hasWiFiData = true;
+		
 	}
 
 	private static void completeCourse() {
@@ -242,7 +242,7 @@ public class Main {
 		}
 		nav = new Navigator(odo, frontUs, frontColorSensor, frontColorData);
 		nav.start();
-		//odo.width = 17.5;
+		odo.width = 17.5;
 			
 		LCD.clear(7);
 		LCD.drawString("COMPLETING COURSE", 0, 7);
@@ -273,22 +273,22 @@ public class Main {
 		}
 		nav.travelTo(0, 0);
 		Delay.msDelay(100);
-		//		for (int[] point : waypoints) {
-		//			nav.wpX = point[0];
-		//			nav.wpY = point[1];
-		//			//4.5 minutes = 270,000 ms, if there are only 30 seconds left, go back to (0,0)
-		//			if(time > 270000)
-		//				nav.travelTo(0, 0, true);
-		//			else 
-		//				nav.travelTo(point[0], point[1], true);
-		//			while (nav.isTravelling()) {
-		//				try {
-		//					Thread.sleep(500);
-		//				} catch (InterruptedException e) {
-		//					e.printStackTrace();
-		//				}
-		//			}
-		//		}
+				for (int[] point : waypoints) {
+					nav.wpX = point[0];
+					nav.wpY = point[1];
+					//4.5 minutes = 270,000 ms, if there are only 30 seconds left, go back to (0,0)
+					if(time > 270000)
+						nav.travelTo(0, 0, true);
+					else 
+						nav.travelTo(point[0], point[1], true);
+					while (nav.isTravelling()) {
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
 	}
 
 
