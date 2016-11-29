@@ -52,9 +52,14 @@ public class Main {
 	public static boolean garbageCollector = false;
 	public static boolean hasWiFiData = false;
 	public static long time = 0;
-	public static int [] robotTarget;
-	public static List<int[]> waypoints = Arrays.asList(new int[][]{/*{ 60, 30 }, { 60, 60 }, { 30, 60 }, { 0, 60 },*/ { 0, 30 },
-		{ 30, 30 }, { 60, 30 }, { 60, 0 }, { 30, 0 }, { 0, 0 },/* { 0, 30 }, { 0, 60 }, { 30, 60 } */});
+	public static int [] robotTarget = new int[]{90,90};
+//	public static List<int[]> waypoints = Arrays.asList(new int[][]{/*{ 60, 30 }, { 60, 60 }, { 30, 60 }, { 0, 60 },*/ { 0, 30 },
+//		{ 30, 30 }, { 60, 30 }, { 60, 0 }, { 30, 0 }, { 0, 0 },/* { 0, 30 }, { 0, 60 }, { 30, 60 } */});
+	public static List<int[]> waypoints = Arrays.asList(new int[][] {{35,35},{35,60},{35,90},{60,90},{90,90},{90,60},
+		{90,35},{120,35},{150,35},{150,60},{150,90},{180,90},{210,90},{210,60},{210,35},{240,35},{270,35},{270,60},{270,90},
+		{240,90},{210,90},{210,120},{210,150},{240,150},{270,150},{270,180},{270,210},{240,210},{210,210},{210,240},{210,270},
+		{180,270},{150,270},{150,240},{150,210},{120,210},{90,210},{90,240},{90,270},{60,270},{35,270},{35,240},{35,210},{60,210},
+		{90,210},{90,180},{90,150},{60,150},{35,150},{35,120},{35,90},{60,90},{90,90},{90,60},{90,35},{60,35},{35,35},{0,0} });
 
 
 	/*
@@ -141,15 +146,9 @@ public class Main {
 //		}).start();
 
 
-
+//
 		wifiTest = new WifiTest2();
 		wifiTest.connectToWifi();
-
-
-
-		
-		
-		
 		getWifiData();
 		
 		//odo.setPosition(new double[]{0,0,0}, new boolean[]{true,true,true});
@@ -157,7 +156,7 @@ public class Main {
 
 		USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
 		localizer.doLocalization();
-
+	
 
 
 
@@ -242,8 +241,10 @@ public class Main {
 		}
 		nav = new Navigator(odo, frontUs, frontColorSensor, frontColorData);
 		nav.start();
-		odo.width = 17.5;
-			
+		
+		odo.width = 17.3;
+//		nav.turnBy(360);
+//		Delay.msDelay(5000);
 		LCD.clear(7);
 		LCD.drawString("COMPLETING COURSE", 0, 7);
 		

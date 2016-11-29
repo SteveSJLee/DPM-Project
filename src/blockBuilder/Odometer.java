@@ -39,7 +39,7 @@ public class Odometer implements TimerListener {
 	public double leftRadius, rightRadius, width;
 	private double x, y, theta;
 	private double[] oldDH, dDH;
-	private double wheelTrack;
+	
 	
 	// constructor
 	public Odometer (EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, int INTERVAL, boolean autostart) {

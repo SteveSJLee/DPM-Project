@@ -3,7 +3,7 @@ package blockBuilder;
 public final class Constants {
 	//measurements
 	public static final double WHEEL_RADIUS = 2.167;
-	public static final double WHEEL_TRACK = 16.618; //16.6 //was 17.5; //was 16.8 
+	public static final double WHEEL_TRACK = 17.3;//16.618; //16.6 //was 17.5; //was 16.8 
 	public static final double LOCALIZATION_WHEEL_TRACK = 16.618; //16.6 //was 17.5; //was 16.8 
 
 	public static final double TILE_WIDTH = 30.48;
@@ -53,7 +53,7 @@ public final class Constants {
 	public static final int[] TEMP_GREEN_ZONE = {0, 120};
 	
 	//wifi
-	public static final String SERVER_IP = "192.168.43.150";
+	public static final String SERVER_IP = "192.168.2.3";
 	public static final int TEAM_NUMBER = 13;
 	public static final String CSC = "CSC";
 	public static final String BSC = "BSC";

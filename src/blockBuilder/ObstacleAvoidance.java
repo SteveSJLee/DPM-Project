@@ -45,7 +45,7 @@ public class ObstacleAvoidance extends Thread {
 	public void run() {
 
 		
-		nav.setSpeeds(60, 60);
+		nav.setSpeeds(Constants.SLOW_SPEED, Constants.SLOW_SPEED);
 		Sound.beep();
 		//get closer to the newly found target	
 		// Has a block but detects an object:
@@ -58,7 +58,7 @@ public class ObstacleAvoidance extends Thread {
 			if (leftUsSensor.filteredDistance > Constants.BLOCK_DETECT_DISTANCE-3) {
 				
 				nav.turnBy(-30);
-				nav.setSpeeds(60, 60);
+				nav.setSpeeds(Constants.SLOW_SPEED, Constants.SLOW_SPEED);
 				while(frontUsSensor.filteredDistance > Constants.BLOCK_DISTANCE){
 					//do nothing, keep moving
 					LCD.clear(7);
@@ -79,6 +79,8 @@ public class ObstacleAvoidance extends Thread {
 
 			while(frontUsSensor.filteredDistance > Constants.BLOCK_DISTANCE){
 				//do nothing, keep moving
+				if(frontUsSensor.filteredDistance > 40)
+					break;
 				LCD.clear(7);
 				LCD.drawString("LOOKING FOR BLOCKS", 0, 7);
 			}
@@ -176,6 +178,7 @@ public class ObstacleAvoidance extends Thread {
 		//move the robot backwards until it's at a safe distance from the obstacle
 		while(frontUsSensor.filteredDistance<15){
 			nav.setSpeeds(-60, -60);
+			
 		}
 		//get the angle at which the robot encountered the obstacle after it backed up
 		double angleChange = 0;
