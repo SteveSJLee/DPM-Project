@@ -36,9 +36,10 @@ public class Odometer implements TimerListener {
 	private Timer timer;
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
 	private final int DEFAULT_TIMEOUT_PERIOD = 20;
-	private double leftRadius, rightRadius, width;
+	public double leftRadius, rightRadius, width;
 	private double x, y, theta;
 	private double[] oldDH, dDH;
+	private double wheelTrack;
 	
 	// constructor
 	public Odometer (EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, int INTERVAL, boolean autostart) {
@@ -79,6 +80,7 @@ public class Odometer implements TimerListener {
 	 * Calculates displacement and heading as title suggests
 	 */
 	private void getDisplacementAndHeading(double[] data) {
+		
 		int leftTacho, rightTacho;
 		leftTacho = leftMotor.getTachoCount();
 		rightTacho = rightMotor.getTachoCount();

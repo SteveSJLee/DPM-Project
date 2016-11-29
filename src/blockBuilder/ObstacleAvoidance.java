@@ -135,7 +135,7 @@ public class ObstacleAvoidance extends Thread {
 			Claw.grab();
 			Claw.numberOfBlocks++;
 			Claw.raise();
-			nav.travelTo(Constants.TEMP_GREEN_ZONE[0], Constants.TEMP_GREEN_ZONE[1]);
+			nav.travelTo(Main.robotTarget[0], Main.robotTarget[1]);
 			Claw.lower();
 			Claw.release();
 			Claw.raise();

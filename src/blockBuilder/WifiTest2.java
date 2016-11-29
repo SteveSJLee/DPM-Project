@@ -43,10 +43,10 @@ public class WifiTest2 {
 		
 		WifiConnection conn = null;
 		try {
-			System.out.println("Connecting...");
+			//System.out.println("Connecting...");
 			conn = new WifiConnection(Constants.SERVER_IP, Constants.TEAM_NUMBER, true);
 		} catch (IOException e) {
-			System.out.println("Connection failed");
+			//System.out.println("Connection failed");
 		}
 		
 		LCD.clear();
@@ -54,7 +54,7 @@ public class WifiTest2 {
 		if (conn != null) {
 			t = conn.StartData;
 			if (t == null) {
-				System.out.println("Failed to read transmission");
+				//System.out.println("Failed to read transmission");
 			} else {
 				dataRecieved = true;
 				CSC = t.get(Constants.CSC);
@@ -69,11 +69,11 @@ public class WifiTest2 {
 				CTN = t.get(Constants.CTN);
 				URZx = t.get(Constants.URZx);
 				BTN = t.get(Constants.BTN);
-				System.out.println("Transmission read:\n" + t.get(URZx));
+				//System.out.println("Transmission read:\n" + t.get(URZx));
 			}
 		}
 		
-		Button.waitForAnyPress();
+		//Button.waitForAnyPress();
 	}
 	
 	public int getCSC(){

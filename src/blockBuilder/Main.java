@@ -10,6 +10,7 @@ import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.*;
 import lejos.robotics.SampleProvider;
+import lejos.utility.Delay;
 
 import java.util.List;
 import java.util.Arrays;
@@ -48,11 +49,13 @@ public class Main {
 	public static int [] greenZoneCenter;
 	public static int [] redZoneCenter;
 	public static boolean blockBuilder = false;
-	public static boolean garbageCollector = false;;
+	public static boolean garbageCollector = false;
+	public static boolean hasWiFiData = false;
 	public static long time = 0;
+	public static int [] robotTarget;
 	public static List<int[]> waypoints = Arrays.asList(new int[][]{/*{ 60, 30 }, { 60, 60 }, { 30, 60 }, { 0, 60 },*/ { 0, 30 },
-			{ 30, 30 }, { 60, 30 }, { 60, 0 }, { 30, 0 }, { 0, 0 },/* { 0, 30 }, { 0, 60 }, { 30, 60 } */});
-	
+		{ 30, 30 }, { 60, 30 }, { 60, 0 }, { 30, 0 }, { 0, 0 },/* { 0, 30 }, { 0, 60 }, { 30, 60 } */});
+
 
 	/*
 	 * Sensors: - 1 Ultrasonic in the front - 3 Color sensors: 1 on the front,
@@ -89,7 +92,7 @@ public class Main {
 		SampleProvider frontColorValue = frontColorSensor.getMode("ColorID");
 		frontColorData = new float[frontColorValue.sampleSize()];
 
-		
+
 
 		leftMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
 		rightMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
@@ -119,42 +122,51 @@ public class Main {
 
 
 
-		
-		
-		(new Thread(){
-			public void run(){
-				StopWatch timer = new StopWatch();
-				timer.start();
-				//LCD.clear(3);
-				while(true){
-					//time is in ms
-					time = timer.getTime();
-					int minutes = (int)time / 60000;
-					int seconds = (int)time / 1000 - minutes * 60000;
-					//int ms = (int)time - seconds * 1000 - minutes * 60000;
-					LCD.drawString("TIME: " + Integer.toString(minutes) + ":" + Integer.toString(seconds) , 0, 3);
-				}
-			}
-		}).start();
 
-		
-//		USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
-//		localizer.doLocalization();
+
+//		(new Thread(){
+//			public void run(){
+//				StopWatch timer = new StopWatch();
+//				timer.start();
+//				//LCD.clear(3);
+//				while(true){
+//					//time is in ms
+//					time = timer.getTime();
+//					int minutes = (int)time / 60000;
+//					int seconds = (int)time / 1000 - minutes * 60000;
+//					//int ms = (int)time - seconds * 1000 - minutes * 60000;
+//					LCD.drawString("TIME: " + Integer.toString(minutes) + ":" + Integer.toString(seconds) , 0, 3);
+//				}
+//			}
+//		}).start();
+
+
+
 		wifiTest = new WifiTest2();
 		wifiTest.connectToWifi();
-		USLocalizer.isComplete = true;
+
+
+
+		getWifiData();
+		
+		while(!hasWiFiData){
+
+		}
+		//odo.setPosition(new double[]{0,0,0}, new boolean[]{true,true,true});
+		//USLocalizer.isComplete = true;
+
+		USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
+		localizer.doLocalization();
+
+
+
+
 		completeCourse();
 
 
 	}
 
-	private static void completeCourse() {
-		// set points to go to
-		while(!USLocalizer.isComplete){
-			//wait for localization to complete
-		}
-		nav = new Navigator(odo, frontUs, frontColorSensor, frontColorData);
-		nav.start();
+	private static void getWifiData(){
 		if (wifiTest.getBSC()!=-1){
 			blockBuilder = true;
 			int[][] greenZoneWayPoints = new int[2][2];
@@ -167,9 +179,9 @@ public class Main {
 				//switch x and y axis
 				//subtract 10 from y axis 
 				greenZoneWayPoints[0][0] = wifiTest.getLGZy(); 
-				greenZoneWayPoints[0][1] = 10 - wifiTest.getLGZx();
+				greenZoneWayPoints[0][1] = 10 - wifiTest.getUGZx();
 				greenZoneWayPoints[1][0] = wifiTest.getUGZy();
-				greenZoneWayPoints[1][1] = 10 - wifiTest.getUGZx();
+				greenZoneWayPoints[1][1] = 10 - wifiTest.getLGZx();
 			} else if (wifiTest.getBSC()==3){
 				greenZoneWayPoints[0][0] = 10 - wifiTest.getUGZx();
 				greenZoneWayPoints[0][1] = 10 - wifiTest.getUGZy();
@@ -181,11 +193,14 @@ public class Main {
 				greenZoneWayPoints[1][0] = 10 - wifiTest.getLGZy();
 				greenZoneWayPoints[1][1] = wifiTest.getUGZx();
 			}
+
 			Filters.convertToTileWidth(greenZoneWayPoints);
 			greenZoneCenter = Filters.findCenterCoordinate(greenZoneWayPoints);
-			
-			nav.travelTo(greenZoneCenter[0], greenZoneCenter[1], true);
-			
+			robotTarget = greenZoneCenter;
+			//nav.turnBy(360);
+			//Delay.msDelay(1000);
+			//nav.travelTo(greenZoneCenter[0], greenZoneCenter[1], true);
+
 		} else if (wifiTest.getCSC()!=-1){
 			garbageCollector = true;
 			int[][] redZoneWayPoints = new int[2][2];
@@ -198,9 +213,9 @@ public class Main {
 				//switch x and y axis
 				//subtract 10 from y axis 
 				redZoneWayPoints[0][0] = wifiTest.getLRZy(); 
-				redZoneWayPoints[0][1] = 10 - wifiTest.getLRZx();
+				redZoneWayPoints[0][1] = 10 - wifiTest.getURZx();
 				redZoneWayPoints[1][0] = wifiTest.getURZy();
-				redZoneWayPoints[1][1] = 10 - wifiTest.getURZx();
+				redZoneWayPoints[1][1] = 10 - wifiTest.getLRZx();
 			} else if (wifiTest.getCSC()==3){
 				redZoneWayPoints[0][0] = 10 - wifiTest.getURZx();
 				redZoneWayPoints[0][1] = 10 - wifiTest.getURZy();
@@ -214,37 +229,69 @@ public class Main {
 			}
 			Filters.convertToTileWidth(redZoneWayPoints);
 			redZoneCenter = Filters.findCenterCoordinate(redZoneWayPoints);
-			
-		}
-		
-		
-		
-		
-		
-		LCD.clear(7);
-		LCD.drawString("COMPLETING COURSE", 0, 7);
-		//initialize the second navigator to use for moving around the field after the localization is complete
-		
-		
+			robotTarget = redZoneCenter;
 
-		for (int[] point : waypoints) {
-			nav.wpX = point[0];
-			nav.wpY = point[1];
-			//4.5 minutes = 270,000 ms, if there are only 30 seconds left, go back to (0,0)
-			if(time > 270000)
-				nav.travelTo(0, 0, true);
-			else 
-				nav.travelTo(point[0], point[1], true);
-			while (nav.isTravelling()) {
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
 		}
+		hasWiFiData = true;
 	}
 
-	
+	private static void completeCourse() {
+		// set points to go to
+		while(!USLocalizer.isComplete){
+			//wait for localization to complete
+		}
+		nav = new Navigator(odo, frontUs, frontColorSensor, frontColorData);
+		nav.start();
+		//odo.width = 17.5;
+			
+		LCD.clear(7);
+		LCD.drawString("COMPLETING COURSE", 0, 7);
+		
+		nav.travelTo(robotTarget[0], robotTarget[1], true);
+		
+		while (nav.isTravelling()) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+
+
+
+		//initialize the second navigator to use for moving around the field after the localization is complete
+
+
+
+		while (nav.isTravelling()) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		nav.travelTo(0, 0);
+		Delay.msDelay(100);
+		//		for (int[] point : waypoints) {
+		//			nav.wpX = point[0];
+		//			nav.wpY = point[1];
+		//			//4.5 minutes = 270,000 ms, if there are only 30 seconds left, go back to (0,0)
+		//			if(time > 270000)
+		//				nav.travelTo(0, 0, true);
+		//			else 
+		//				nav.travelTo(point[0], point[1], true);
+		//			while (nav.isTravelling()) {
+		//				try {
+		//					Thread.sleep(500);
+		//				} catch (InterruptedException e) {
+		//					e.printStackTrace();
+		//				}
+		//			}
+		//		}
+	}
+
+
 
 }
+

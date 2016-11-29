@@ -10,7 +10,7 @@ package blockBuilder;
  */
 public class Claw {
 	final static int angle = 360*6;
-	final static int claw = 360;
+	final static int claw = 420; //360
 	public static boolean hasBlock = false;
 	public static int numberOfBlocks = 0;
 	public static int blockToAngle = 600; //(2.5 cm/1.5 cm/rotation)*360 deg/rotation = 600

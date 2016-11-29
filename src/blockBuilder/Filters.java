@@ -42,7 +42,7 @@ public final class Filters {
 		if(coordinates.length != 2 || coordinates[0].length != 2 || coordinates[1].length !=2)
 			return null;
 		else
-			return new int[]{(coordinates[0][0]+coordinates[1][0])/2, (coordinates[1][0]+coordinates[1][1])/2};
+			return new int[]{(coordinates[0][0]+coordinates[1][0])/2, (coordinates[0][1]+coordinates[1][1])/2};
 	}
 	
 	/**

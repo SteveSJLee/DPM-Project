@@ -169,6 +169,8 @@ public class USLocalizer {
 		nav.travelTo(0.0,0.0);
 		nav.turnTo(0.0,  false);
 		
+		//odo.setPosition(new double[]{0,0,0}, new boolean[]{true,true,true});
+		
 		//LOCALIZATION IS DONE HERE
 		
 		//stop the motors at the end of the localization

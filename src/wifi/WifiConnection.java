@@ -50,7 +50,7 @@ public class WifiConnection {
 		DataInputStream dis = new DataInputStream(socketClient.getInputStream());
 
 		if (debugPrint) {
-			System.out.println("Connected\nWaiting for data");
+			//System.out.println("Connected\nWaiting for data");
 		}
 
 		// Wait for the server transmission to arrive
@@ -64,7 +64,7 @@ public class WifiConnection {
 		this.StartData = ParseTransmission.parseData(dis);
 
 		if (debugPrint) {
-			System.out.println("Data received");
+			//System.out.println("Data received");
 		}
 
 		// End the wifi connection
