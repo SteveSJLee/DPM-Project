@@ -1,5 +1,10 @@
 package blockBuilder;
 
+/**
+ * class containing all constant values
+ * @author patricklai
+ *
+ */
 public final class Constants {
 	//measurements
 	public static final double WHEEL_RADIUS = 2.167;

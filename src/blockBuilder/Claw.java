@@ -1,12 +1,8 @@
 package blockBuilder;
 
 /**
- * @author patricklai, stevelee
  * the claw class only serves 2 purposes: controlling the claw and the lift
- */
-/**
- * @author patricklai
- *
+ * @author patricklai, stevelee
  */
 public class Claw {
 	final static int angle = 360*6;

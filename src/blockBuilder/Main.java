@@ -18,7 +18,7 @@ import java.util.Arrays;
 import blockBuilder.USLocalizer;
 import org.apache.commons.lang3.time.StopWatch;
 
-/* Team 13's final DPM project.
+/** Team 13's final DPM project.
  * Software Developpers: Patrick, Ilyas, Ahmet
  * Tester: Steve
  */
@@ -53,8 +53,7 @@ public class Main {
 	public static boolean hasWiFiData = false;
 	public static long time = 0;
 	public static int [] robotTarget = new int[]{90,90};
-//	public static List<int[]> waypoints = Arrays.asList(new int[][]{/*{ 60, 30 }, { 60, 60 }, { 30, 60 }, { 0, 60 },*/ { 0, 30 },
-//		{ 30, 30 }, { 60, 30 }, { 60, 0 }, { 30, 0 }, { 0, 0 },/* { 0, 30 }, { 0, 60 }, { 30, 60 } */});
+	//waypoints the robot will trael to on the field
 	public static List<int[]> waypoints = Arrays.asList(new int[][] {{35,35},{35,60},{35,90},{60,90},{90,90},{90,60},
 		{90,35},{120,35},{150,35},{150,60},{150,90},{180,90},{210,90},{210,60},{210,35},{240,35},{270,35},{270,60},{270,90},
 		{240,90},{210,90},{210,120},{210,150},{240,150},{270,150},{270,180},{270,210},{240,210},{210,210},{210,240},{210,270},
@@ -102,17 +101,15 @@ public class Main {
 		leftMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
 		rightMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
 
+		//create instances of sideuscontroller to use for us polling with median filter
 		rightUsControl = new SideUSController(6, "right");
 		rightUs = new UltrasonicPoller(rightUsValue, rightUsData, rightUsControl);
 		leftUsControl = new SideUSController(5, "left");
 		leftUs = new UltrasonicPoller(leftUsValue, leftUsData, leftUsControl);
-
-
 		frontUsControl = new SideUSController(4, "front");
 		frontUs = new UltrasonicPoller(frontUsValue, frontUsData, frontUsControl);
 
-		// rightUs.start();
-		// leftUs.start();
+
 		frontUs.start();
 		leftUs.start();
 		rightUs.start();
@@ -128,35 +125,31 @@ public class Main {
 
 
 
-
-//		(new Thread(){
-//			public void run(){
-//				StopWatch timer = new StopWatch();
-//				timer.start();
-//				//LCD.clear(3);
-//				while(true){
-//					//time is in ms
-//					time = timer.getTime();
-//					int minutes = (int)time / 60000;
-//					int seconds = (int)time / 1000 - minutes * 60000;
-//					//int ms = (int)time - seconds * 1000 - minutes * 60000;
-//					LCD.drawString("TIME: " + Integer.toString(minutes) + ":" + Integer.toString(seconds) , 0, 3);
-//				}
-//			}
-//		}).start();
+		//create an internal timer in a new thread so the robot can keep track of time
+		(new Thread(){
+			public void run(){
+				StopWatch timer = new StopWatch();
+				timer.start();
+				while(true){
+					//time is in ms
+					time = timer.getTime();
+					int minutes = (int)time / 60000;
+					int seconds = (int)time / 1000 - minutes * 60000;
+					LCD.drawString("TIME: " + Integer.toString(minutes) + ":" + Integer.toString(seconds) , 0, 3);
+				}
+			}
+		}).start();
 
 
-//
+		//wait for data from wifi server
 		wifiTest = new WifiTest2();
 		wifiTest.connectToWifi();
 		getWifiData();
-		
-		//odo.setPosition(new double[]{0,0,0}, new boolean[]{true,true,true});
-		//USLocalizer.isComplete = true;
+
 
 		USLocalizer localizer = new USLocalizer(nav2, odo, frontUsValue, frontUsData, USLocalizer.LocalizationType.FALLING_EDGE);
 		localizer.doLocalization();
-	
+
 
 
 
@@ -165,6 +158,9 @@ public class Main {
 
 	}
 
+	/**
+	 * Gets coordinate data and role from the wifi server
+	 */
 	private static void getWifiData(){
 		if (wifiTest.getBSC()!=-1){
 			blockBuilder = true;
@@ -196,9 +192,6 @@ public class Main {
 			Filters.convertToTileWidth(greenZoneWayPoints);
 			greenZoneCenter = Filters.findCenterCoordinate(greenZoneWayPoints);
 			robotTarget = greenZoneCenter;
-			//nav.turnBy(360);
-			//Delay.msDelay(1000);
-			//nav.travelTo(greenZoneCenter[0], greenZoneCenter[1], true);
 			hasWiFiData = true;
 		} else if (wifiTest.getCSC()!=-1){
 			garbageCollector = true;
@@ -231,9 +224,12 @@ public class Main {
 			robotTarget = redZoneCenter;
 			hasWiFiData = true;
 		}
-		
+
 	}
 
+	/**
+	 * tells the robot to travel to the waypoints specified in the Main class
+	 */
 	private static void completeCourse() {
 		// set points to go to
 		while(!USLocalizer.isComplete){
@@ -241,15 +237,14 @@ public class Main {
 		}
 		nav = new Navigator(odo, frontUs, frontColorSensor, frontColorData);
 		nav.start();
-		
+
 		odo.width = 17.3;
-//		nav.turnBy(360);
-//		Delay.msDelay(5000);
+		//		
 		LCD.clear(7);
 		LCD.drawString("COMPLETING COURSE", 0, 7);
-		
+
 		nav.travelTo(robotTarget[0], robotTarget[1], true);
-		
+
 		while (nav.isTravelling()) {
 			try {
 				Thread.sleep(500);
@@ -274,25 +269,22 @@ public class Main {
 		}
 		nav.travelTo(0, 0);
 		Delay.msDelay(100);
-				for (int[] point : waypoints) {
-					nav.wpX = point[0];
-					nav.wpY = point[1];
-					//4.5 minutes = 270,000 ms, if there are only 30 seconds left, go back to (0,0)
-					if(time > 270000)
-						nav.travelTo(0, 0, true);
-					else 
-						nav.travelTo(point[0], point[1], true);
-					while (nav.isTravelling()) {
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
+		for (int[] point : waypoints) {
+			nav.wpX = point[0];
+			nav.wpY = point[1];
+			//4.5 minutes = 270,000 ms, if there are only 30 seconds left, go back to (0,0)
+			if(time > 270000)
+				nav.travelTo(0, 0, true);
+			else 
+				nav.travelTo(point[0], point[1], true);
+			while (nav.isTravelling()) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
+			}
+		}
 	}
-
-
-
 }
 

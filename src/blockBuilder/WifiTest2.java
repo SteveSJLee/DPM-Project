@@ -29,6 +29,10 @@ import lejos.hardware.lcd.TextLCD;
 
 
 
+/**
+ *  class used for connecting the robot to the DPM wifi server 
+ * @author returnoftheturk
+ */
 public class WifiTest2 {
 	private static int CSC, BSC, LRZy, UGZy, LRZx, UGZx, LGZy, LGZx, URZy, CTN, URZx, BTN;
 	
@@ -38,6 +42,9 @@ public class WifiTest2 {
 
 	private static TextLCD LCD = LocalEV3.get().getTextLCD();
 
+	/**
+	 * Attempts to connect to wifi and receive data.
+	 */
 	public void connectToWifi(){
 		LCD.clear();
 		

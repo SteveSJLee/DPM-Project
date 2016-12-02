@@ -3,6 +3,11 @@ package blockBuilder;
 import lejos.hardware.lcd.LCD;
 import lejos.robotics.SampleProvider;
 
+/**
+ * 
+ * class used for fetching data from the light sensors
+ *
+ */
 public class ColorPoller extends Thread {
 	private SampleProvider colorProvider;
 	private float[] colorData;

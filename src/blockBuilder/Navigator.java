@@ -14,7 +14,6 @@ import lejos.hardware.sensor.SensorModes;
 
 
 /**
- * @author returnoftheturk
  *The Navigator class extends the functionality of the Navigation class.
  * It offers an alternative travelTo() method which uses a state machine
  * to implement obstacle avoidance.
@@ -27,6 +26,7 @@ import lejos.hardware.sensor.SensorModes;
  * detection over small distances. One place where you might want to do this
  * is in the ObstacleAvoidance class. Another place is methods that implement 
  * specific features for future milestones such as retrieving an object.
+ *  @author returnoftheturk
  */
 public class Navigator extends BasicNavigator {
 
@@ -104,7 +104,6 @@ public class Navigator extends BasicNavigator {
 			
 			switch (state) {
 			case INIT:
-//				Sound.buzz();
 				LCD.clear(7);
 				LCD.drawString("INIT", 0, 7);
 				if (isNavigating) {
@@ -138,7 +137,6 @@ public class Navigator extends BasicNavigator {
 			case TRAVELLING:
 				LCD.clear(7);
 				LCD.drawString("MOVING", 0, 7);
-//				Sound.buzz();
 				if (checkEmergency()) { // order matters!
 					state = State.EMERGENCY;
 					avoidance = new ObstacleAvoidance(this, colorSensor, colorData, destx, desty, Main.frontUsControl, Main.leftUsControl, Main.rightUsControl);
@@ -155,14 +153,7 @@ public class Navigator extends BasicNavigator {
 //					state = State.SEARCHING;
 				}
 				break;
-				//case to search for blocks once it reaches each destination
-//			case SEARCHING:
-//				setSpeeds(-30, 30);
-//				while (usSensor.getDistance()>70){}
-//				stopMotors();
-//				state = State.TRAVELLING;
-//				
-//				break;
+
 			case EMERGENCY:
 				LCD.clear(7);
 				LCD.drawString("EMERGENCY", 0, 7);
@@ -189,11 +180,18 @@ public class Navigator extends BasicNavigator {
 		}
 	}
 
+	/**
+	 * @return if the robot has a block nearby in front of it
+	 */
 	private boolean checkEmergency() {
 		return usSensor.getDistance() < Constants.BLOCK_DETECT_DISTANCE;
 	}
 
 
+	/**
+	 * @param angle desired angle in degrees
+	 * turns to an angle in degrees
+	 */
 	private void turnTo(double angle) {
 		double error;
 		error = angle - this.odometer.getAng();

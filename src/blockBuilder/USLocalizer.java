@@ -4,11 +4,15 @@ import lejos.utility.Delay;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 
-//*********************
-//class used to localize the robot and move it to position (0, 0) on the surface
-//NOTE that we do not implement the rising edge localization type as we do not use it in our program.
 
 
+
+/**
+ * class used to localize the robot from a corner on the field and move it to 0,0 using falling edge
+ * (rising edge isn't actually implemented)
+ * @author ilyas
+ * 
+ */
 public class USLocalizer {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
 	private final double TILE_SIZE = 30.48;
@@ -33,7 +37,8 @@ public class USLocalizer {
 	public static boolean isComplete = false;
 
 
-	// Constructor
+	
+	
 	public USLocalizer(Navigation nav, Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
 		this.nav = nav;
 		this.odo = odo;
@@ -42,7 +47,10 @@ public class USLocalizer {
 		this.locType = locType;
 	}
 
-	// Localize the robot using an ultrasonic Sensor and 2 walls
+	
+	/**
+	 * Localize the robot using an ultrasonic Sensor and 2 walls
+	 */
 	public void doLocalization() {
 		// Variables used during the process
 		double [] pos = new double [3];
@@ -199,18 +207,7 @@ public class USLocalizer {
 		return distance;
 	}
 	
-//	private float getFilteredData() {
-//		usSensor.fetchSample(usData, 0);
-//		float distance = Main.frontUsControl.filteredDistance;;
-//		
-//		//same filter used as in lab 4
-//		if (distance > DISTANCE_THRESHHOLD) 
-//			distance = DISTANCE_THRESHHOLD;
-//
-//		try { Thread.sleep(25); } catch(Exception e){}
-//
-//		return distance;
-//	}
+
 	
 	
 

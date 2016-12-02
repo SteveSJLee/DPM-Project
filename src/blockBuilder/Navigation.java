@@ -11,6 +11,10 @@
 package blockBuilder;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
+/**
+ * the navigation class is used to move the robot during localization
+ * @author ilyas
+ */
 public class Navigation {
 	final static int FAST = 200, SLOW = 100, ACCELERATION = 4000;
 	final static double DEG_ERR = 2.0, CM_ERR = 0.5;
@@ -29,8 +33,11 @@ public class Navigation {
 		this.rightMotor.setAcceleration(ACCELERATION);
 	}
 
-	/*
-	 * Functions to set the motor speeds jointly
+	
+	/**
+	 * @param lSpd desired left motor speed
+	 * @param rSpd desired right motor speed
+	 * sets both motor speeds at the same time
 	 */
 	public void setSpeeds(float lSpd, float rSpd) {
 		this.leftMotor.setSpeed(lSpd);
@@ -58,7 +65,7 @@ public class Navigation {
 			this.rightMotor.forward();
 	}
 
-	/*
+	/**
 	 * Float the two motors jointly
 	 */
 	public void setFloat() {
@@ -68,7 +75,12 @@ public class Navigation {
 		this.rightMotor.flt(true);
 	}
 
-	/*
+	
+
+	
+	/**
+	 * @param x x coordinate
+	 * @param y	y coordinate
 	 * TravelTo function which takes as arguments the x and y position in cm Will travel to designated position, while
 	 * constantly updating it's heading
 	 */
@@ -84,7 +96,13 @@ public class Navigation {
 		this.setSpeeds(0, 0);
 	}
 
-	/*
+	
+	
+	
+	
+	/**
+	 * @param angle desired angle in degrees
+	 * @param stop whether or not to stop after turning
 	 * TurnTo function which takes an angle and boolean as arguments The boolean controls whether or not to stop the
 	 * motors when the turn is completed
 	 */
@@ -112,7 +130,11 @@ public class Navigation {
 		}
 	}
 	
-	/*
+
+	
+	
+	/**
+	 * @param distance distance in cm
 	 * Go foward a set distance in cm
 	 */
 	public void goForward(double distance) {

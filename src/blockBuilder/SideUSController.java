@@ -4,17 +4,10 @@ import java.util.ArrayList;
 import lejos.hardware.lcd.LCD;
 
 
+
 /**
+ * The side ultrasonic controllers are used to get data from all three ultrasonic sensors using a median filter
  * @author patricklai
- * SideUSController serves as the controller for processing data observed by the left and right ultrasonic sensors.
- */
-/**
- * @author patricklai
- *
- */
-/**
- * @author patricklai
- *
  */
 public class SideUSController extends Thread implements UltrasonicController {
 	
@@ -43,8 +36,6 @@ public class SideUSController extends Thread implements UltrasonicController {
 	@Override
 	public void processUSData(int distance) {
 		
-		
-
 		if(this.dataList == null)
 			this.dataList = new ArrayList<Integer>();
 		

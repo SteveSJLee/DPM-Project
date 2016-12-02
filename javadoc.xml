@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="public" author="true" classpath="lib/commons-lang3-3.5.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.7" sourcefiles="src/blockBuilder/WifiTest2.java" sourcepath="src" splitindex="true" use="true" version="true">
+            <link href="file:/Users/patricklai/Dropbox/macos/workspace/dpmfall2016-team13/doc/"/>
+            <link href="file:/Users/patricklai/Dropbox/U2/ECSE%20211/leJOS_EV3_0.9.1-beta/docs/ev3/"/>
+        </javadoc>
+    </target>
+</project>

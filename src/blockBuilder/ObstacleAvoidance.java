@@ -11,6 +11,11 @@ import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
 
 
+/**
+ * Class that allows the robot to do obstacle avoidance and pick up blocks 
+ * @author patricklai
+ *
+ */
 public class ObstacleAvoidance extends Thread {
 
 	Navigator nav;
@@ -169,11 +174,7 @@ public class ObstacleAvoidance extends Thread {
 	public void startObstacleAvoidance() {
 		Sound.buzz();
 		obstruction = true;
-		//boolean to go to the next point
-
-		//		if (Math.abs(destx - nav.odometer.getX())<15 || Math.abs(desty - nav.odometer.getY())<15){
-		//			obstruction = true;
-		//		}
+		
 
 		//move the robot backwards until it's at a safe distance from the obstacle
 		while(frontUsSensor.filteredDistance<15){
@@ -305,4 +306,3 @@ public class ObstacleAvoidance extends Thread {
 	}
 
 }
-

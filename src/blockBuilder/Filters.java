@@ -5,10 +5,18 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * all data filters for data from the us sensors and wifi
+ * @author patricklai
+ *
+ */
 public final class Filters {
 	
-	//median filter returns the median of a set of data given as an array or arraylist
 	
+	/**
+	 * @param f an array of floats
+	 * @return the median of a set of data given as an array
+	 */
 	public static float medianFilter(float[] f){
 		Arrays.sort(f);
 		//if f is odd return the element right in the middle, or else return the average of the 2 middle elements
@@ -19,6 +27,10 @@ public final class Filters {
 		
 	}
 	
+	/**
+	 * @param a an array of floats
+	 * @return the median of a set of data given as an array
+	 */
 	public static float medianFilter(ArrayList<Integer> a){
 		Collections.sort(a);
 		if(a.size() % 2!= 0)
@@ -27,6 +39,10 @@ public final class Filters {
 			return ( a.get(a.size() / 2) + a.get(a.size()/2 - 1) ) / 2;
 	}
 
+	/**
+	 * @param f any float number
+	 * @return clips a number at the value specified in the constants class
+	 */
 	public static float clippingFilter(float f){
 		if(f > Constants.CLIPPING_MAX)
 			return Constants.CLIPPING_MAX;

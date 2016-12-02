@@ -5,17 +5,14 @@ import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import java.util.ArrayList;
 
-//
-//  Control of the wall follower is applied periodically by the 
-//  UltrasonicPoller thread.  The while loop at the bottom executes
-//  in a loop.  Assuming that the us.fetchSample, and cont.processUSData
-//  methods operate in about 20mS, and that the thread sleeps for
-//  50 mS at the end of each loop, then one cycle through the loop
-//  is approximately 70 mS.  This corresponds to a sampling rate
-//  of 1/70mS or about 14 Hz.
-//
 
 
+
+/**
+ * used for fetching samples directly from the ultrasonic sensors without applying any filter other than letting the max distance being 255
+ * @author patricklai
+ *
+ */
 public class UltrasonicPoller extends Thread{
 	private SampleProvider us;
 	private UltrasonicController cont;

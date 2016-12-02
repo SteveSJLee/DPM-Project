@@ -1,6 +1,10 @@
 package blockBuilder;
 
-//odometry correction assuming that the center of rotation of the robot is the point right between the wheels
+
+/**
+ * Odometry correction to corect the robot's heading by detecting black lines using the light sensor on the field. 
+ * @author patricklai
+ */
 public class OdometryCorrection extends Thread {
 	
 	private double detectionLeftTacho, detectionRightTacho;

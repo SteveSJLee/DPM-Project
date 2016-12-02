@@ -3,6 +3,10 @@ package blockBuilder;
 import java.util.Arrays;
 import java.util.ArrayList;
 
+/**
+ * the side color controllers are used to process data from the 2 side light sensors 
+ * @author patricklai
+ */
 public class SideColorController extends Thread implements ColorController {
 
 	@Override

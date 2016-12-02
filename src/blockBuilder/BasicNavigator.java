@@ -1,4 +1,4 @@
-//Class to navigate from point to point.  Code taken from
+
 // ta code but edited extensively to work for our robot
 //Implements travelTo methods, turnTo methods, as well as other
 //helper methods to navigate
@@ -9,6 +9,10 @@ import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.utility.Delay;
 
+/**
+ * superclass for navigatior. Contains all basic navigation methods
+ *
+ */
 public class BasicNavigator extends Thread {
 	public Odometer odometer;
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
@@ -24,7 +28,7 @@ public class BasicNavigator extends Thread {
 		this.rightMotor.setAcceleration(Constants.WHEEL_ACCELERATION);
 	}
 
-	/*
+	/**
 	 * Functions to set the motor speeds jointly
 	 */
 	public void setSpeeds(float lSpd, float rSpd) {
@@ -53,7 +57,7 @@ public class BasicNavigator extends Thread {
 			this.rightMotor.forward();
 	}
 
-	/*
+	/**
 	 * Float the two motors jointly
 	 */
 	public void setFloat() {
@@ -68,7 +72,7 @@ public class BasicNavigator extends Thread {
 		this.setSpeeds(0, 0);
 	}
 
-	/*
+	/**
 	 * TravelTo function which takes as arguments the x and y position in cm
 	 * Will travel to designated position, while constantly updating it's
 	 * heading
@@ -98,7 +102,7 @@ public class BasicNavigator extends Thread {
 		this.setSpeeds(0, 0);
 	}
 
-	/*
+	/**
 	 * TurnTo function which takes an angle and boolean as arguments The boolean
 	 * controls whether or not to stop the motors when the turn is completed
 	 */
@@ -127,7 +131,11 @@ public class BasicNavigator extends Thread {
 	}
 
 
-	// method to turn by a set angle
+
+	/**
+	 * turn by a fixed angle
+	 * @param angle
+	 */
 	public void turnBy(double angle) {
 		leftMotor.setSpeed(150);
 		rightMotor.setSpeed(150);
@@ -135,7 +143,7 @@ public class BasicNavigator extends Thread {
 		rightMotor.rotate(-convertAngle(Constants.WHEEL_RADIUS, Constants.WHEEL_TRACK, angle), false);
 	}
 
-	/*
+	/**
 	 * Go foward a set distance in cm
 	 */
 	public void goForward(double distance) {
@@ -144,14 +152,33 @@ public class BasicNavigator extends Thread {
 
 	}
 
+	/**
+	 * converts robot measurements and a desired angle to a distance
+	 * @param radius
+	 * @param width
+	 * @param angle
+	 * @return
+	 */
 	private static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
 
+	/**
+	 * converts robot measurements to travel distance
+	 * @param radius
+	 * @param distance
+	 * @return
+	 */
 	private static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
 
+	/**
+	 * calculates the distance to a point
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	private double calculateDistance(double x, double y) {
 		double diffX = x - odometer.getX();
 		double diffY = y - odometer.getY();
@@ -161,6 +188,12 @@ public class BasicNavigator extends Thread {
 		return distance;
 	}
 
+	/**
+	 * calculates an angle to a point
+	 * @param x x coordinate
+	 * @param y y coordinate
+	 * @return angle
+	 */
 	protected double calculateAngle(double x, double y) { // calculate angles
 														// according to tutorial
 														// slides
@@ -209,7 +242,12 @@ public class BasicNavigator extends Thread {
 		return diffTheta;
 
 	}
-	//is it facing where it wants to go
+	
+	/**
+	 * check if a robot is facing its destination
+	 * @param angle angle in degrees
+	 * 
+	 */
 	protected boolean facingDest(double angle) {
 		return Math.abs(angle - odometer.getAng()) < Constants.ODO_ANGLE_ERROR;
 	}
@@ -218,7 +256,13 @@ public class BasicNavigator extends Thread {
 		return Math.abs(x - odometer.getX()) < Constants.ODO_DISTANCE_ERROR
 				&& Math.abs(y - odometer.getY()) < Constants.ODO_DISTANCE_ERROR;
 	}
-	//get angle of where it wants to go
+	
+	/**
+	 * gets the angle of the target coordinate
+	 * @param x x coordinate
+	 * @param y y coordinate
+	 * @return
+	 */
 	protected double getDestAngle(double x, double y) {
 		double minAng = (Math.atan2(y - odometer.getY(), x - odometer.getX()))
 				* (180.0 / Math.PI);
